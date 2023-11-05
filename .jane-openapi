@@ -1,0 +1,16 @@
+<?php
+
+use Svix\CustomQueryResolvers\BoolCustomQueryResolver;
+
+return [
+    'openapi-file' => __DIR__ . '/openapi.json',
+    'namespace' => 'Svix\Internal',
+    'directory' => __DIR__ . '/src/internal',
+    'date-format' => 'Y-m-d\TH:i:s.uP',
+    'skip-null-values' => true,
+    'custom-query-resolver' => [
+        '__type' => [
+            'bool' => BoolCustomQueryResolver::class,
+        ],
+    ],
+];

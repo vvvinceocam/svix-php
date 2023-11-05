@@ -1,0 +1,29 @@
+{
+  "require-dev": {
+    "jane-php/open-api-3": "v7.5.4",
+    "friendsofphp/php-cs-fixer": "^3.36",
+    "psy/psysh": "^0.11.22",
+    "pestphp/pest": "^2.24",
+    "nyholm/psr7": "^1.8"
+  },
+  "require": {
+    "jane-php/open-api-runtime": "v7.5.4",
+    "php-http/discovery": "^1.17",
+    "psr/http-client-implementation": "*",
+    "symfony/http-client": "^6.3",
+    "psr/http-factory-implementation": "*",
+    "php-http/client-common": "^2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Svix\\": "src/",
+      "Svix\\Internal\\": "src/internal"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": false,
+      "pestphp/pest-plugin": true
+    }
+  }
+}
