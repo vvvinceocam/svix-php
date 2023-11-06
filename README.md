@@ -18,24 +18,24 @@ $client = new Svix('auth token');
 $app = new ApplicationIn();
 $app->setName('Super Customer');
 $app->setUid('id-from-our-application');
-$app = $client->applications()->create($app);
+$app = $client->applications->create($app);
 
 // Bind an endpoint
 $endpoint = new EndpointIn();
 $endpoint->setUrl('https://example.com/customer/endpoint');
-$endpoint = $client->endpoints()->create($app->getId(), $endpoint);
+$endpoint = $client->endpoints->create($app->getId(), $endpoint);
 
-// Fetch the secret that customer must use to validate webhook calls
-$secret = $client->endpoints()->getSecret($app->getId(), $endpoint->getId());
+// Get the secret that customer must use to validate webhook calls
+$secret = $client->endpoints->getSecret($app->getId(), $endpoint->getId());
 
 // Send a message to our freshly enrolled customer
 $message = new MessageIn();
-$message->setEventType('billing.start');
+$message->setEventType('billing.started');
 $message->setPayload([
     'some' => 'data',
     'with' => [
         'arbitrary' => 'depth',
     ],
 ]);
-$client->messages()->create($app->getId(), $message);
+$client->messages->create($app->getId(), $message);
 ```

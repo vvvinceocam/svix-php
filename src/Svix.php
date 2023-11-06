@@ -13,9 +13,17 @@ use Svix\Internal\Client;
 /**
  * Svix client.
  */
-class Svix
+readonly class Svix
 {
     private Client $client;
+
+    public Applications $applications;
+    public Authentication $authentication;
+    public BackgroundTasks $backgroundTasks;
+    public Endpoints $endpoints;
+    public EventTypes $eventTypes;
+    public MessageAttempts $messageAttempts;
+    public Messages $messages;
 
     /**
      * Create a new Svix client.
@@ -56,40 +64,12 @@ class Svix
         );
 
         $this->client = Client::create($httpClient);
-    }
-
-    public function applications(): Applications
-    {
-        return new Applications($this->client);
-    }
-
-    public function messages(): Messages
-    {
-        return new Messages($this->client);
-    }
-
-    public function endpoints(): Endpoints
-    {
-        return new Endpoints($this->client);
-    }
-
-    public function messageAttempts(): MessageAttempts
-    {
-        return new MessageAttempts($this->client);
-    }
-
-    public function authentication(): Authentication
-    {
-        return new Authentication($this->client);
-    }
-
-    public function eventTypes(): EventTypes
-    {
-        return new EventTypes($this->client);
-    }
-
-    public function backgroundTasks(): BackgroundTasks
-    {
-        return new BackgroundTasks($this->client);
+        $this->applications = new Applications($this->client);
+        $this->authentication = new Authentication($this->client);
+        $this->backgroundTasks = new BackgroundTasks($this->client);
+        $this->endpoints = new Endpoints($this->client);
+        $this->eventTypes = new EventTypes($this->client);
+        $this->messageAttempts = new MessageAttempts($this->client);
+        $this->messages = new Messages($this->client);
     }
 }
