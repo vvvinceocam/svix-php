@@ -23,6 +23,7 @@ readonly class Svix
     public Endpoints $endpoints;
     public EventTypes $eventTypes;
     public Health $health;
+    public Integration $integration;
     public MessageAttempts $messageAttempts;
     public Messages $messages;
 
@@ -71,6 +72,7 @@ readonly class Svix
         $this->endpoints = new Endpoints($this->client);
         $this->eventTypes = new EventTypes($this->client);
         $this->health = new Health($this->client);
+        $this->integration = new Integration($this->client);
         $this->messageAttempts = new MessageAttempts($this->client);
         $this->messages = new Messages($this->client);
     }
