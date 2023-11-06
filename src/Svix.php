@@ -87,4 +87,9 @@ class Svix
     {
         return new EventTypes($this->client);
     }
+
+    public function backgroundTasks(): BackgroundTasks
+    {
+        return new BackgroundTasks($this->client);
+    }
 }
