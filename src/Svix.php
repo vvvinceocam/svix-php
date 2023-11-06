@@ -72,4 +72,9 @@ class Svix
     {
         return new Endpoints($this->client);
     }
+
+    public function messageAttempts(): MessageAttempts
+    {
+        return new MessageAttempts($this->client);
+    }
 }
