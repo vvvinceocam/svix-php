@@ -77,4 +77,9 @@ class Svix
     {
         return new MessageAttempts($this->client);
     }
+
+    public function authentication(): Authentication
+    {
+        return new Authentication($this->client);
+    }
 }
