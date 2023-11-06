@@ -3,6 +3,7 @@
 namespace Svix;
 
 use JetBrains\PhpStorm\ArrayShape;
+use Svix\BaseApi\EndpointsGroup;
 use Svix\Internal\Model\ListResponseMessageOut;
 use Svix\Internal\Model\MessageIn;
 use Svix\Internal\Model\MessageOut;

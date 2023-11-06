@@ -2,7 +2,7 @@
 
 namespace Svix;
 
-use Svix\Internal\Client;
+use Svix\BaseApi\EndpointsGroup;
 use Svix\Internal\Model\ApplicationIn;
 use Svix\Internal\Model\ApplicationOut;
 use Svix\Internal\Model\ApplicationPatch;

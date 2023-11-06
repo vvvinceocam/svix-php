@@ -58,4 +58,9 @@ class Svix
     {
         return new Messages($this->client);
     }
+
+    public function endpoints(): Endpoints
+    {
+        return new Endpoints($this->client);
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Svix;
+namespace Svix\BaseApi;
 
 use Svix\Internal\Client;
 
