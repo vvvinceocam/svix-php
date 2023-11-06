@@ -82,4 +82,9 @@ class Svix
     {
         return new Authentication($this->client);
     }
+
+    public function eventTypes(): EventTypes
+    {
+        return new EventTypes($this->client);
+    }
 }
