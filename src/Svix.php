@@ -10,10 +10,19 @@ use Http\Discovery\Psr18ClientDiscovery;
 use Http\Message\Authentication\Header;
 use Svix\Internal\Client;
 
+/**
+ * Svix client.
+ */
 class Svix
 {
     private Client $client;
 
+    /**
+     * Create a new Svix client.
+     *
+     * @param string $authToken Authentication token
+     * @param SvixOptions|null $options
+     */
     public function __construct(string $authToken, ?SvixOptions $options = null)
     {
         $parts = explode(".", $authToken);
