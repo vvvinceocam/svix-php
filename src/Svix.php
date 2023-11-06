@@ -22,6 +22,7 @@ readonly class Svix
     public BackgroundTasks $backgroundTasks;
     public Endpoints $endpoints;
     public EventTypes $eventTypes;
+    public Health $health;
     public MessageAttempts $messageAttempts;
     public Messages $messages;
 
@@ -69,6 +70,7 @@ readonly class Svix
         $this->backgroundTasks = new BackgroundTasks($this->client);
         $this->endpoints = new Endpoints($this->client);
         $this->eventTypes = new EventTypes($this->client);
+        $this->health = new Health($this->client);
         $this->messageAttempts = new MessageAttempts($this->client);
         $this->messages = new Messages($this->client);
     }
