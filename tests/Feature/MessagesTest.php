@@ -9,11 +9,11 @@ $client = new Svix(getenv('SVIX_TEST_ACCESS_KEY'));
 beforeEach(function () use ($client) {
     $appIn = new ApplicationIn();
     $appIn->setName('application for messages test');
-    $this->appID = $client->applications()->create($appIn)->getId();
+    $this->appID = $client->applications->create($appIn)->getId();
 });
 
 afterEach(function () use ($client) {
-    $client->applications()->delete($this->appID);
+    $client->applications->delete($this->appID);
 });
 
 test('can create then fetch back message', function () use ($client) {
@@ -21,11 +21,11 @@ test('can create then fetch back message', function () use ($client) {
     $messageIn->setPayload(['foo' => 'bar', 'array' => [1, 2, 3]]);
     $messageIn->setEventType('customer.register');
 
-    $messageSaved = $client->messages()->create($this->appID, $messageIn);
+    $messageSaved = $client->messages->create($this->appID, $messageIn);
 
     expect($messageSaved->getPayload()->getArrayCopy())->toEqualCanonicalizing($messageIn->getPayload());
 
-    $messageOut = $client->messages()->get($this->appID, $messageSaved->getId());
+    $messageOut = $client->messages->get($this->appID, $messageSaved->getId());
 
     expect($messageOut->getPayload()->getArrayCopy())->toEqualCanonicalizing($messageIn->getPayload());
 });
@@ -43,17 +43,17 @@ test('can list messages', function () use ($client) {
         $messageIn = new MessageIn();
         $messageIn->setPayload($message['payload']);
         $messageIn->setEventType($message['event_type']);
-        $client->messages()->create($this->appID, $messageIn);
+        $client->messages->create($this->appID, $messageIn);
         usleep(50_000);
     }
 
     sleep(1);
 
-    $listMessagesOut = $client->messages()->list($this->appID);
+    $listMessagesOut = $client->messages->list($this->appID);
     $messagesOut = $listMessagesOut->getData();
     expect(count($messagesOut))->toBe(5);
 
-    $listMessagesOut = $client->messages()->list($this->appID, ['event_types' => ['customer.expired']]);
+    $listMessagesOut = $client->messages->list($this->appID, ['event_types' => ['customer.expired']]);
     $messagesOut = $listMessagesOut->getData();
     expect(count($messagesOut))->toBe(2);
 });
@@ -63,11 +63,11 @@ test('can delete payload', function () use ($client) {
     $messageIn->setPayload(['foo' => 'bar', 'array' => [1, 2, 3]]);
     $messageIn->setEventType('customer.register');
 
-    $messageSaved = $client->messages()->create($this->appID, $messageIn);
+    $messageSaved = $client->messages->create($this->appID, $messageIn);
 
-    $client->messages()->deletePayload($this->appID, $messageSaved->getId());
+    $client->messages->deletePayload($this->appID, $messageSaved->getId());
 
-    $messageOut = $client->messages()->get($this->appID, $messageSaved->getId());
+    $messageOut = $client->messages->get($this->appID, $messageSaved->getId());
     expect($messageOut->getPayload()['m'])->toBe('EXPUNGED');
 });
 
