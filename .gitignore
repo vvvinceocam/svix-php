@@ -18,5 +18,5 @@ devenv.local.nix
 vendor/
 
 # Generated code
-src/internal
+src/Internal
 
