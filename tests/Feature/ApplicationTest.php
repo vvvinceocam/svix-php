@@ -12,6 +12,8 @@ test('can create then fetch back application', function () use ($client) {
     $appOut = $client->applications()->get($appSaved->getId());
 
     expect($appOut->getName())->toBe($appIn->getName());
+
+    $client->applications()->delete($appSaved->getId());
 });
 
 test('can delete application', function () use ($client) {
@@ -23,5 +25,7 @@ test('can delete application', function () use ($client) {
 
     $client->applications()->delete($appSaved->getId());
     $client->applications()->get($appSaved->getId());
+
+    $client->applications()->delete($appSaved->getId());
 })->throws(\Svix\Internal\Exception\NotFoundException::class);
 

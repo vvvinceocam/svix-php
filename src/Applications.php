@@ -12,12 +12,8 @@ use Svix\Internal\Model\ListResponseApplicationOut;
  * Consumer Applications are where messages are sent to. In most cases you would want
  * to have one application for each of your users.
  */
-readonly class Applications
+readonly class Applications extends EndpointsGroup
 {
-    public function __construct(public Client $client)
-    {
-    }
-
     /**
      * List of all the organization's applications.
      *

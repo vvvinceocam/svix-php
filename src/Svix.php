@@ -49,8 +49,13 @@ class Svix
         $this->client = Client::create($httpClient);
     }
 
-    public function applications()
+    public function applications(): Applications
     {
         return new Applications($this->client);
+    }
+
+    public function messages(): Messages
+    {
+        return new Messages($this->client);
     }
 }

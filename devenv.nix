@@ -2,5 +2,10 @@
 
 {
   dotenv.enable = true;
-  packages = [ pkgs.just pkgs.php82 pkgs.php82.packages.composer ];
+  packages = with pkgs; [
+    just
+    php82
+    php82.packages.psysh
+    php82.packages.composer
+  ];
 }
