@@ -1,0 +1,30 @@
+name: Main
+
+on: push
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install composer dependencies
+        run: |
+          composer install --prefer-dist --no-progress
+
+      - name: Generate OpenAPI client
+        run: |
+          php vendor/bin/jane-openapi generate
+
+      - name: Run tests
+        run: |
+          php vendor/bin/pest
+        env:
+          SVIX_TEST_ACCESS_KEY : ${{ secrets.SVIX_TEST_ACCESS_KEY }}
