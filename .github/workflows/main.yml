@@ -26,3 +26,5 @@ jobs:
       - name: Run tests
         run: |
           php vendor/bin/pest
+        env:
+          SVIX_TEST_ACCESS_KEY : ${{ secrets.SVIX_TEST_ACCESS_KEY }}
