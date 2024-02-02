@@ -41,25 +41,40 @@ class MessageAttemptHeadersOutNormalizer implements DenormalizerInterface, Norma
         if (null === $data || false === \is_array($data)) {
             return $object;
         }
-        if (\array_key_exists('sensitive', $data)) {
+        if (\array_key_exists('responseHeaders', $data) && $data['responseHeaders'] !== null) {
             $values = array();
-            foreach ($data['sensitive'] as $value) {
-                $values[] = $value;
+            foreach ($data['responseHeaders'] as $value) {
+                $values_1 = array();
+                foreach ($value as $value_1) {
+                    $values_1[] = $value_1;
+                }
+                $values[] = $values_1;
             }
-            $object->setSensitive($values);
+            $object->setResponseHeaders($values);
+            unset($data['responseHeaders']);
+        }
+        elseif (\array_key_exists('responseHeaders', $data) && $data['responseHeaders'] === null) {
+            $object->setResponseHeaders(null);
+        }
+        if (\array_key_exists('sensitive', $data)) {
+            $values_2 = array();
+            foreach ($data['sensitive'] as $value_2) {
+                $values_2[] = $value_2;
+            }
+            $object->setSensitive($values_2);
             unset($data['sensitive']);
         }
         if (\array_key_exists('sentHeaders', $data)) {
-            $values_1 = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
-            foreach ($data['sentHeaders'] as $key => $value_1) {
-                $values_1[$key] = $value_1;
+            $values_3 = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
+            foreach ($data['sentHeaders'] as $key => $value_3) {
+                $values_3[$key] = $value_3;
             }
-            $object->setSentHeaders($values_1);
+            $object->setSentHeaders($values_3);
             unset($data['sentHeaders']);
         }
-        foreach ($data as $key_1 => $value_2) {
+        foreach ($data as $key_1 => $value_4) {
             if (preg_match('/.*/', (string) $key_1)) {
-                $object[$key_1] = $value_2;
+                $object[$key_1] = $value_4;
             }
         }
         return $object;
@@ -70,19 +85,30 @@ class MessageAttemptHeadersOutNormalizer implements DenormalizerInterface, Norma
     public function normalize($object, $format = null, array $context = array())
     {
         $data = array();
-        $values = array();
-        foreach ($object->getSensitive() as $value) {
-            $values[] = $value;
+        if ($object->isInitialized('responseHeaders') && null !== $object->getResponseHeaders()) {
+            $values = array();
+            foreach ($object->getResponseHeaders() as $value) {
+                $values_1 = array();
+                foreach ($value as $value_1) {
+                    $values_1[] = $value_1;
+                }
+                $values[] = $values_1;
+            }
+            $data['responseHeaders'] = $values;
         }
-        $data['sensitive'] = $values;
-        $values_1 = array();
-        foreach ($object->getSentHeaders() as $key => $value_1) {
-            $values_1[$key] = $value_1;
+        $values_2 = array();
+        foreach ($object->getSensitive() as $value_2) {
+            $values_2[] = $value_2;
         }
-        $data['sentHeaders'] = $values_1;
-        foreach ($object as $key_1 => $value_2) {
+        $data['sensitive'] = $values_2;
+        $values_3 = array();
+        foreach ($object->getSentHeaders() as $key => $value_3) {
+            $values_3[$key] = $value_3;
+        }
+        $data['sentHeaders'] = $values_3;
+        foreach ($object as $key_1 => $value_4) {
             if (preg_match('/.*/', (string) $key_1)) {
-                $data[$key_1] = $value_2;
+                $data[$key_1] = $value_4;
             }
         }
         return $data;

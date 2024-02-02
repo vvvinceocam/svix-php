@@ -56,12 +56,9 @@ class SettingsInNormalizer implements DenormalizerInterface, NormalizerInterface
         elseif (\array_key_exists('customBaseFontSize', $data) && $data['customBaseFontSize'] === null) {
             $object->setCustomBaseFontSize(null);
         }
-        if (\array_key_exists('customColor', $data) && $data['customColor'] !== null) {
+        if (\array_key_exists('customColor', $data)) {
             $object->setCustomColor($data['customColor']);
             unset($data['customColor']);
-        }
-        elseif (\array_key_exists('customColor', $data) && $data['customColor'] === null) {
-            $object->setCustomColor(null);
         }
         if (\array_key_exists('customFontFamily', $data) && $data['customFontFamily'] !== null) {
             $object->setCustomFontFamily($data['customFontFamily']);
@@ -69,6 +66,13 @@ class SettingsInNormalizer implements DenormalizerInterface, NormalizerInterface
         }
         elseif (\array_key_exists('customFontFamily', $data) && $data['customFontFamily'] === null) {
             $object->setCustomFontFamily(null);
+        }
+        if (\array_key_exists('customFontFamilyUrl', $data) && $data['customFontFamilyUrl'] !== null) {
+            $object->setCustomFontFamilyUrl($data['customFontFamilyUrl']);
+            unset($data['customFontFamilyUrl']);
+        }
+        elseif (\array_key_exists('customFontFamilyUrl', $data) && $data['customFontFamilyUrl'] === null) {
+            $object->setCustomFontFamilyUrl(null);
         }
         if (\array_key_exists('customLogoUrl', $data) && $data['customLogoUrl'] !== null) {
             $object->setCustomLogoUrl($data['customLogoUrl']);
@@ -143,6 +147,9 @@ class SettingsInNormalizer implements DenormalizerInterface, NormalizerInterface
         }
         if ($object->isInitialized('customFontFamily') && null !== $object->getCustomFontFamily()) {
             $data['customFontFamily'] = $object->getCustomFontFamily();
+        }
+        if ($object->isInitialized('customFontFamilyUrl') && null !== $object->getCustomFontFamilyUrl()) {
+            $data['customFontFamilyUrl'] = $object->getCustomFontFamilyUrl();
         }
         if ($object->isInitialized('customLogoUrl') && null !== $object->getCustomLogoUrl()) {
             $data['customLogoUrl'] = $object->getCustomLogoUrl();

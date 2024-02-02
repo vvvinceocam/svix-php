@@ -2,7 +2,7 @@
 
 namespace Svix\Internal\Exception;
 
-class CalculateAggregateAppStatsUnauthorizedException extends UnauthorizedException
+class V1EventTypeGetRetryScheduleTooManyRequestsException extends TooManyRequestsException
 {
     /**
      * @var \Svix\Internal\Model\HttpErrorOut
@@ -14,7 +14,7 @@ class CalculateAggregateAppStatsUnauthorizedException extends UnauthorizedExcept
     private $response;
     public function __construct(\Svix\Internal\Model\HttpErrorOut $httpErrorOut, \Psr\Http\Message\ResponseInterface $response)
     {
-        parent::__construct('Unauthorized');
+        parent::__construct('Too Many Requests');
         $this->httpErrorOut = $httpErrorOut;
         $this->response = $response;
     }

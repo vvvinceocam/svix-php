@@ -1,6 +1,25 @@
 {
     "components": {
         "schemas": {
+            "AggregateEventTypesOut": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/BackgroundTaskStatus"
+                    },
+                    "task": {
+                        "$ref": "#/components/schemas/BackgroundTaskType"
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "task"
+                ],
+                "type": "object"
+            },
             "AppPortalAccessIn": {
                 "properties": {
                     "featureFlags": {
@@ -328,7 +347,8 @@
                     "endpoint.recover",
                     "application.stats",
                     "message.broadcast",
-                    "sdk.generate"
+                    "sdk.generate",
+                    "event-type.aggregate"
                 ],
                 "type": "string"
             },
@@ -359,37 +379,81 @@
                 ],
                 "type": "string"
             },
+            "Color": {
+                "type": "string"
+            },
+            "CompletionChoice": {
+                "properties": {
+                    "finish_reason": {
+                        "type": "string"
+                    },
+                    "index": {
+                        "format": "int64",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/CompletionMessage"
+                    }
+                },
+                "required": [
+                    "finish_reason",
+                    "index",
+                    "message"
+                ],
+                "type": "object"
+            },
+            "CompletionMessage": {
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "content",
+                    "role"
+                ],
+                "type": "object"
+            },
             "CustomColorPalette": {
                 "properties": {
                     "backgroundHover": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "backgroundPrimary": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "backgroundSecondary": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
+                    },
+                    "buttonPrimary": {
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "interactiveAccent": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
+                    },
+                    "navigationAccent": {
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
+                    },
+                    "primary": {
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "textDanger": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "textPrimary": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -424,6 +488,25 @@
                 "required": [
                     "token",
                     "url"
+                ],
+                "type": "object"
+            },
+            "Duration": {
+                "properties": {
+                    "nanos": {
+                        "format": "uint32",
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "secs": {
+                        "format": "uint64",
+                        "minimum": 0,
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "nanos",
+                    "secs"
                 ],
                 "type": "object"
             },
@@ -1376,14 +1459,20 @@
                         "nullable": true
                     },
                     "customColor": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "customFontFamily": {
                         "example": "Open Sans",
                         "nullable": true,
                         "pattern": "^[a-zA-Z0-9\\-_ ]+$",
+                        "type": "string"
+                    },
+                    "customFontFamilyUrl": {
+                        "format": "uri",
+                        "maxLength": 65536,
+                        "minLength": 1,
+                        "nullable": true,
                         "type": "string"
                     },
                     "customLogoUrl": {
@@ -1396,6 +1485,10 @@
                     "customThemeOverride": {
                         "$ref": "#/components/schemas/CustomThemeOverride",
                         "nullable": true
+                    },
+                    "displayName": {
+                        "nullable": true,
+                        "type": "string"
                     },
                     "enableChannels": {
                         "default": false,
@@ -1457,28 +1550,6 @@
                         },
                         "description": "A pre-parsed JSON spec.",
                         "example": {
-                            "components": {
-                                "schemas": {
-                                    "Pet": {
-                                        "properties": {
-                                            "id": {
-                                                "format": "int64",
-                                                "type": "integer"
-                                            },
-                                            "name": {
-                                                "type": "string"
-                                            },
-                                            "tag": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "id",
-                                            "name"
-                                        ]
-                                    }
-                                }
-                            },
                             "info": {
                                 "title": "Webhook Example",
                                 "version": "1.0.0"
@@ -1491,7 +1562,22 @@
                                             "content": {
                                                 "application/json": {
                                                     "schema": {
-                                                        "$ref": "#/components/schemas/Pet"
+                                                        "properties": {
+                                                            "id": {
+                                                                "format": "int64",
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "tag": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
                                                     }
                                                 }
                                             },
@@ -1512,28 +1598,6 @@
                     "specRaw": {
                         "description": "A string, parsed by the server as YAML or JSON.",
                         "example": {
-                            "components": {
-                                "schemas": {
-                                    "Pet": {
-                                        "properties": {
-                                            "id": {
-                                                "format": "int64",
-                                                "type": "integer"
-                                            },
-                                            "name": {
-                                                "type": "string"
-                                            },
-                                            "tag": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "id",
-                                            "name"
-                                        ]
-                                    }
-                                }
-                            },
                             "info": {
                                 "title": "Webhook Example",
                                 "version": "1.0.0"
@@ -1546,7 +1610,22 @@
                                             "content": {
                                                 "application/json": {
                                                     "schema": {
-                                                        "$ref": "#/components/schemas/Pet"
+                                                        "properties": {
+                                                            "id": {
+                                                                "format": "int64",
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "tag": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
                                                     }
                                                 }
                                             },
@@ -1855,9 +1934,6 @@
                 ],
                 "type": "object"
             },
-            "ExportEnvironmentIn": {
-                "type": "object"
-            },
             "ExportEventTypeOut": {
                 "properties": {
                     "id": {
@@ -1880,11 +1956,54 @@
             "FontSizeConfig": {
                 "properties": {
                     "base": {
-                        "format": "int",
+                        "format": "uint16",
+                        "minimum": 0,
                         "nullable": true,
                         "type": "integer"
                     }
                 },
+                "type": "object"
+            },
+            "GenerateIn": {
+                "properties": {
+                    "prompt": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "prompt"
+                ],
+                "type": "object"
+            },
+            "GenerateOut": {
+                "properties": {
+                    "choices": {
+                        "items": {
+                            "$ref": "#/components/schemas/CompletionChoice"
+                        },
+                        "type": "array"
+                    },
+                    "created": {
+                        "format": "int64",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "object": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "choices",
+                    "created",
+                    "id",
+                    "model",
+                    "object"
+                ],
                 "type": "object"
             },
             "HTTPValidationError": {
@@ -1915,6 +2034,26 @@
                     "detail"
                 ],
                 "title": "HttpError",
+                "type": "object"
+            },
+            "InboundPathParams": {
+                "properties": {
+                    "app_id": {
+                        "description": "The app's ID or UID",
+                        "example": "unique-app-identifier",
+                        "maxLength": 256,
+                        "minLength": 1,
+                        "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                        "type": "string"
+                    },
+                    "inbound_token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "app_id",
+                    "inbound_token"
+                ],
                 "type": "object"
             },
             "IntegrationIn": {
@@ -2329,6 +2468,10 @@
                         "example": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
                         "type": "string"
                     },
+                    "msg": {
+                        "$ref": "#/components/schemas/MessageOut",
+                        "nullable": true
+                    },
                     "msgId": {
                         "description": "The msg's ID",
                         "example": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2",
@@ -2535,6 +2678,18 @@
             },
             "MessageAttemptHeadersOut": {
                 "properties": {
+                    "responseHeaders": {
+                        "items": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "maxItems": 2,
+                            "minItems": 2,
+                            "type": "array"
+                        },
+                        "nullable": true,
+                        "type": "array"
+                    },
                     "sensitive": {
                         "items": {
                             "type": "string"
@@ -2566,6 +2721,10 @@
                         "description": "The attempt's ID",
                         "example": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
                         "type": "string"
+                    },
+                    "msg": {
+                        "$ref": "#/components/schemas/MessageOut",
+                        "nullable": true
                     },
                     "msgId": {
                         "description": "The msg's ID",
@@ -2934,6 +3093,29 @@
                         "maximum": 90,
                         "minimum": 5,
                         "type": "integer"
+                    },
+                    "tags": {
+                        "description": "List of free-form tags that can be filtered by when listing messages",
+                        "example": [
+                            "my_tag",
+                            "other"
+                        ],
+                        "items": {
+                            "example": "project_1337",
+                            "maxLength": 128,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "maxItems": 5,
+                        "minItems": 1,
+                        "nullable": true,
+                        "type": "array",
+                        "uniqueItems": true
+                    },
+                    "transformationsParams": {
+                        "description": "Extra parameters to pass to Transformations (for future use)",
+                        "nullable": true,
+                        "type": "object"
                     }
                 },
                 "required": [
@@ -3032,6 +3214,28 @@
                     "Fail",
                     "Sending"
                 ]
+            },
+            "MessageStreamOut": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/MessageOut"
+                        },
+                        "type": "array"
+                    },
+                    "done": {
+                        "type": "boolean"
+                    },
+                    "iterator": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "data",
+                    "done",
+                    "iterator"
+                ],
+                "type": "object"
             },
             "OauthPayloadIn": {
                 "properties": {
@@ -3168,6 +3372,32 @@
                 ],
                 "type": "object"
             },
+            "RetrySchedule": {
+                "items": {
+                    "$ref": "#/components/schemas/Duration"
+                },
+                "type": "array"
+            },
+            "RetryScheduleInOut": {
+                "properties": {
+                    "retrySchedule": {
+                        "$ref": "#/components/schemas/RetrySchedule",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "RotatedUrlOut": {
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ],
+                "type": "object"
+            },
             "SettingsIn": {
                 "properties": {
                     "colorPaletteDark": {
@@ -3184,14 +3414,20 @@
                         "type": "integer"
                     },
                     "customColor": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "customFontFamily": {
                         "example": "Open Sans",
                         "nullable": true,
                         "pattern": "^[a-zA-Z0-9\\-_ ]+$",
+                        "type": "string"
+                    },
+                    "customFontFamilyUrl": {
+                        "format": "uri",
+                        "maxLength": 65536,
+                        "minLength": 1,
+                        "nullable": true,
                         "type": "string"
                     },
                     "customLogoUrl": {
@@ -3256,14 +3492,20 @@
                         "type": "integer"
                     },
                     "customColor": {
-                        "format": "color",
-                        "nullable": true,
-                        "type": "string"
+                        "$ref": "#/components/schemas/Color",
+                        "nullable": true
                     },
                     "customFontFamily": {
                         "example": "Open Sans",
                         "nullable": true,
                         "pattern": "^[a-zA-Z0-9\\-_ ]+$",
+                        "type": "string"
+                    },
+                    "customFontFamilyUrl": {
+                        "format": "uri",
+                        "maxLength": 65536,
+                        "minLength": 1,
+                        "nullable": true,
                         "type": "string"
                     },
                     "customLogoUrl": {
@@ -3670,11 +3912,17 @@
             "TransformationTemplateKind": {
                 "enum": [
                     "Custom",
-                    "Slack",
+                    "CustomerIO",
                     "Discord",
-                    "Teams",
+                    "Hubspot",
                     "Inngest",
-                    "Segment"
+                    "Salesforce",
+                    "Segment",
+                    "Slack",
+                    "Teams",
+                    "TriggerDev",
+                    "Windmill",
+                    "Zapier"
                 ],
                 "type": "string"
             },
@@ -5150,6 +5398,17 @@
                         "schema": {
                             "default": true,
                             "description": "When `true` attempt content is included in the response",
+                            "type": "boolean"
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "description": "When `true`, the message information is included in the response",
+                        "in": "query",
+                        "name": "with_msg",
+                        "schema": {
+                            "default": false,
+                            "description": "When `true`, the message information is included in the response",
                             "type": "boolean"
                         },
                         "style": "form"
@@ -7214,12 +7473,12 @@
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "svix.endpoint.patchHeaders(\"app_id\", \"endpoint_id\", EndpointHeadersPatchIn()\n    .headers(\"\"\"{\"X-Example\":\"123\",\"X-Foobar\":\"Bar\"}\"\"\")\n)"
+                        "source": "svix.endpoint.patchHeaders(\"app_id\", \"endpoint_id\", EndpointHeadersPatchIn()\n    .headers(/* ... */)\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "svix.getEndpoint().patchHeaders(\"app_id\", \"endpoint_id\", new EndpointHeadersPatchIn()\n    .headers(\"{\\\"X-Example\\\":\\\"123\\\",\\\"X-Foobar\\\":\\\"Bar\\\"}\")\n)"
+                        "source": "svix.getEndpoint().patchHeaders(\"app_id\", \"endpoint_id\", new EndpointHeadersPatchIn()\n    .headers(/* ... */)\n)"
                     },
                     {
                         "label": "Ruby",
@@ -7234,7 +7493,7 @@
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "await svix.Endpoint.PatchHeadersAsync(\"app_id\", \"endpoint_id\", new EndpointHeadersPatchIn{\n    headers: new {\"X-Example\":\"123\",\"X-Foobar\":\"Bar\"}\n})"
+                        "source": "await svix.Endpoint.PatchHeadersAsync(\"app_id\", \"endpoint_id\", new EndpointHeadersPatchIn{\n    headers: /* ... */\n})"
                     },
                     {
                         "label": "CLI",
@@ -7406,12 +7665,12 @@
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "svix.endpoint.updateHeaders(\"app_id\", \"endpoint_id\", EndpointHeadersIn()\n    .headers(\"\"\"{\"X-Example\":\"123\",\"X-Foobar\":\"Bar\"}\"\"\")\n)"
+                        "source": "svix.endpoint.updateHeaders(\"app_id\", \"endpoint_id\", EndpointHeadersIn()\n    .headers(/* ... */)\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "svix.getEndpoint().updateHeaders(\"app_id\", \"endpoint_id\", new EndpointHeadersIn()\n    .headers(\"{\\\"X-Example\\\":\\\"123\\\",\\\"X-Foobar\\\":\\\"Bar\\\"}\")\n)"
+                        "source": "svix.getEndpoint().updateHeaders(\"app_id\", \"endpoint_id\", new EndpointHeadersIn()\n    .headers(/* ... */)\n)"
                     },
                     {
                         "label": "Ruby",
@@ -7426,7 +7685,7 @@
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "await svix.Endpoint.UpdateHeadersAsync(\"app_id\", \"endpoint_id\", new EndpointHeadersIn{\n    headers: new {\"X-Example\":\"123\",\"X-Foobar\":\"Bar\"}\n})"
+                        "source": "await svix.Endpoint.UpdateHeadersAsync(\"app_id\", \"endpoint_id\", new EndpointHeadersIn{\n    headers: /* ... */\n})"
                     },
                     {
                         "label": "CLI",
@@ -9716,6 +9975,646 @@
                 ]
             }
         },
+        "/api/v1/app/{app_id}/events/": {
+            "get": {
+                "description": "Reads the stream of created messages for an application",
+                "operationId": "v1.message.stream",
+                "parameters": [
+                    {
+                        "description": "The app's ID or UID",
+                        "in": "path",
+                        "name": "app_id",
+                        "required": true,
+                        "schema": {
+                            "description": "The app's ID or UID",
+                            "example": "unique-app-identifier",
+                            "maxLength": 256,
+                            "minLength": 1,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    },
+                    {
+                        "description": "Limit the number of returned items",
+                        "in": "query",
+                        "name": "limit",
+                        "schema": {
+                            "description": "Limit the number of returned items",
+                            "format": "uint64",
+                            "maximum": 250,
+                            "minimum": 1,
+                            "type": "integer"
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "description": "The iterator returned from a prior invocation",
+                        "in": "query",
+                        "name": "iterator",
+                        "schema": {
+                            "description": "The iterator returned from a prior invocation",
+                            "nullable": true,
+                            "type": "string"
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "description": "Filter response based on the event type",
+                        "in": "query",
+                        "name": "event_types",
+                        "schema": {
+                            "description": "Filter response based on the event type",
+                            "items": {
+                                "description": "The event type's name",
+                                "example": "user.signup",
+                                "maxLength": 256,
+                                "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                                "type": "string"
+                            },
+                            "nullable": true,
+                            "type": "array",
+                            "uniqueItems": true
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "description": "Filter response based on the event type",
+                        "in": "query",
+                        "name": "channels",
+                        "schema": {
+                            "description": "Filter response based on the event type",
+                            "items": {
+                                "example": "project_1337",
+                                "maxLength": 128,
+                                "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                                "type": "string"
+                            },
+                            "nullable": true,
+                            "type": "array",
+                            "uniqueItems": true
+                        },
+                        "style": "form"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageStreamOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Stream Events",
+                "tags": [
+                    "Message"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const messageStreamOut = await svix.message.stream(\"app_id\");"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const messageStreamOut = await svix.message.stream(\"app_id\");"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "message_stream_out = svix.message.stream(\"app_id\")"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "message_stream_out = await svix.message.stream(\"app_id\")"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "messageStreamOut, err := svixClient.Message.Stream(ctx, \"app_id\")"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val messageStreamOut = svix.message.stream(\"app_id\")"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "MessageStreamOut messageStreamOut = svix.getMessage().stream(\"app_id\")"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "message_stream_out = svix.message.stream(\"app_id\")"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let message_stream_out = svix.message().stream(\"app_id\").await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var messageStreamOut = await svix.Message.StreamAsync(\"app_id\")"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix message stream \"app_id\""
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'GET' \\\n  'https://api.eu.svix.com/api/v1/app/{app_id}/events/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json'"
+                    }
+                ]
+            }
+        },
+        "/api/v1/app/{app_id}/inbound/msg/{inbound_token}/": {
+            "post": {
+                "description": "Handles a raw inbound webhook for the application.",
+                "operationId": "v1.inbound.msg",
+                "parameters": [
+                    {
+                        "description": "The app's ID or UID",
+                        "in": "path",
+                        "name": "app_id",
+                        "required": true,
+                        "schema": {
+                            "description": "The app's ID or UID",
+                            "example": "unique-app-identifier",
+                            "maxLength": 256,
+                            "minLength": 1,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    },
+                    {
+                        "in": "path",
+                        "name": "inbound_token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    },
+                    {
+                        "description": "The event type's name",
+                        "in": "query",
+                        "name": "event_type",
+                        "schema": {
+                            "description": "The event type's name",
+                            "example": "user.signup",
+                            "maxLength": 256,
+                            "nullable": true,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "style": "form"
+                    },
+                    {
+                        "description": "The request's idempotency key",
+                        "in": "header",
+                        "name": "idempotency-key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "text/plain; charset=utf-8": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Handle Inbound",
+                "tags": [
+                    "Inbound"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const messageOut = await svix.inbound.msg(\"app_id\", \"inbound_token\");"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const messageOut = await svix.inbound.msg(\"app_id\", \"inbound_token\");"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "message_out = svix.inbound.msg(\"app_id\", \"inbound_token\", None)"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "message_out = await svix.inbound.msg(\"app_id\", \"inbound_token\", None)"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "messageOut, err := svixClient.Inbound.Msg(ctx, \"app_id\", \"inbound_token\")"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val messageOut = svix.inbound.msg(\"app_id\", \"inbound_token\")"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "MessageOut messageOut = svix.getInbound().msg(\"app_id\", \"inbound_token\")"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "message_out = svix.inbound.msg(\"app_id\", \"inbound_token\")"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let message_out = svix.inbound().msg(\"app_id\", \"inbound_token\", None).await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var messageOut = await svix.Inbound.MsgAsync(\"app_id\", \"inbound_token\")"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix inbound msg \"app_id\" \"inbound_token\""
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/app/{app_id}/inbound/msg/{inbound_token}/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json'"
+                    }
+                ]
+            }
+        },
+        "/api/v1/app/{app_id}/inbound/rotate-url/": {
+            "post": {
+                "description": "Invalidates the previous inbound url (if one exists), producing a new inbound\nURL for this app",
+                "operationId": "v1.inbound.rotate-url",
+                "parameters": [
+                    {
+                        "description": "The app's ID or UID",
+                        "in": "path",
+                        "name": "app_id",
+                        "required": true,
+                        "schema": {
+                            "description": "The app's ID or UID",
+                            "example": "unique-app-identifier",
+                            "maxLength": 256,
+                            "minLength": 1,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    },
+                    {
+                        "description": "The request's idempotency key",
+                        "in": "header",
+                        "name": "idempotency-key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RotatedUrlOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Rotate Url",
+                "tags": [
+                    "Inbound"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const rotatedUrlOut = await svix.inbound.rotateUrl(\"app_id\");"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const rotatedUrlOut = await svix.inbound.rotateUrl(\"app_id\");"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "rotated_url_out = svix.inbound.rotate_url(\"app_id\", None)"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "rotated_url_out = await svix.inbound.rotate_url(\"app_id\", None)"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "rotatedUrlOut, err := svixClient.Inbound.RotateUrl(ctx, \"app_id\")"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val rotatedUrlOut = svix.inbound.rotateUrl(\"app_id\")"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "RotatedUrlOut rotatedUrlOut = svix.getInbound().rotateUrl(\"app_id\")"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "rotated_url_out = svix.inbound.rotate_url(\"app_id\")"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let rotated_url_out = svix.inbound().rotate_url(\"app_id\", None).await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var rotatedUrlOut = await svix.Inbound.RotateUrlAsync(\"app_id\")"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix inbound rotate-url \"app_id\""
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/app/{app_id}/inbound/rotate-url/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json'"
+                    }
+                ]
+            }
+        },
         "/api/v1/app/{app_id}/integration/": {
             "get": {
                 "description": "List the application's integrations.",
@@ -11153,6 +12052,20 @@
                         "style": "form"
                     },
                     {
+                        "description": "Filter messages matching the provided tag",
+                        "in": "query",
+                        "name": "tag",
+                        "schema": {
+                            "description": "Filter messages matching the provided tag",
+                            "example": "project_1337",
+                            "maxLength": 128,
+                            "nullable": true,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "style": "form"
+                    },
+                    {
                         "description": "Filter response based on the event type",
                         "in": "query",
                         "name": "event_types",
@@ -11481,62 +12394,62 @@
                     {
                         "label": "JavaScript",
                         "lang": "JavaScript",
-                        "source": "const messageOut = await svix.message.create(\"app_id\", {\n    eventId: \"unique-msg-identifier\",\n    eventType: \"user.signup\",\n    payload: {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    channels: [\"project_123\", \"group_2\"],\n    payloadRetentionPeriod: 90,\n    application: null\n});"
+                        "source": "const messageOut = await svix.message.create(\"app_id\", {\n    eventId: \"unique-msg-identifier\",\n    eventType: \"user.signup\",\n    payload: {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    channels: [\"project_123\", \"group_2\"],\n    payloadRetentionPeriod: 90,\n    application: null,\n    tags: [\"my_tag\", \"other\"],\n    transformationsParams: null\n});"
                     },
                     {
                         "label": "TypeScript",
                         "lang": "JavaScript",
-                        "source": "const messageOut = await svix.message.create(\"app_id\", {\n    eventId: \"unique-msg-identifier\",\n    eventType: \"user.signup\",\n    payload: {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    channels: [\"project_123\", \"group_2\"],\n    payloadRetentionPeriod: 90,\n    application: null\n});"
+                        "source": "const messageOut = await svix.message.create(\"app_id\", {\n    eventId: \"unique-msg-identifier\",\n    eventType: \"user.signup\",\n    payload: {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    channels: [\"project_123\", \"group_2\"],\n    payloadRetentionPeriod: 90,\n    application: null,\n    tags: [\"my_tag\", \"other\"],\n    transformationsParams: null\n});"
                     },
                     {
                         "label": "Python",
                         "lang": "Python",
-                        "source": "message_out = svix.message.create(\"app_id\", MessageIn(\n    event_id=\"unique-msg-identifier\",\n    event_type=\"user.signup\",\n    payload={\"email\": \"test@example.com\", \"type\": \"user.created\", \"username\": \"test_user\"},\n    channels=[\"project_123\", \"group_2\"],\n    payload_retention_period=90,\n    application=None\n), None)"
+                        "source": "message_out = svix.message.create(\"app_id\", MessageIn(\n    event_id=\"unique-msg-identifier\",\n    event_type=\"user.signup\",\n    payload={\"email\": \"test@example.com\", \"type\": \"user.created\", \"username\": \"test_user\"},\n    channels=[\"project_123\", \"group_2\"],\n    payload_retention_period=90,\n    application=None,\n    tags=[\"my_tag\", \"other\"],\n    transformations_params=None\n), None)"
                     },
                     {
                         "label": "Python (Async)",
                         "lang": "Python",
-                        "source": "message_out = await svix.message.create(\"app_id\", MessageIn(\n    event_id=\"unique-msg-identifier\",\n    event_type=\"user.signup\",\n    payload={\"email\": \"test@example.com\", \"type\": \"user.created\", \"username\": \"test_user\"},\n    channels=[\"project_123\", \"group_2\"],\n    payload_retention_period=90,\n    application=None\n), None)"
+                        "source": "message_out = await svix.message.create(\"app_id\", MessageIn(\n    event_id=\"unique-msg-identifier\",\n    event_type=\"user.signup\",\n    payload={\"email\": \"test@example.com\", \"type\": \"user.created\", \"username\": \"test_user\"},\n    channels=[\"project_123\", \"group_2\"],\n    payload_retention_period=90,\n    application=None,\n    tags=[\"my_tag\", \"other\"],\n    transformations_params=None\n), None)"
                     },
                     {
                         "label": "Go",
                         "lang": "Go",
-                        "source": "messageOut, err := svixClient.Message.Create(ctx, \"app_id\", &MessageIn{\n    EventId: \"unique-msg-identifier\",\n    EventType: \"user.signup\",\n    Payload: map[string]interface{}{\"email\": \"test@example.com\", \"type\": \"user.created\", \"username\": \"test_user\"},\n    Channels: []string{\"project_123\", \"group_2\"},\n    PayloadRetentionPeriod: 90,\n    Application: nil,\n})"
+                        "source": "messageOut, err := svixClient.Message.Create(ctx, \"app_id\", &MessageIn{\n    EventId: \"unique-msg-identifier\",\n    EventType: \"user.signup\",\n    Payload: map[string]interface{}{\"email\": \"test@example.com\", \"type\": \"user.created\", \"username\": \"test_user\"},\n    Channels: []string{\"project_123\", \"group_2\"},\n    PayloadRetentionPeriod: 90,\n    Application: nil,\n    Tags: []string{\"my_tag\", \"other\"},\n    TransformationsParams: nil,\n})"
                     },
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "val messageOut = svix.message.create(\"app_id\", MessageIn()\n    .eventId(\"unique-msg-identifier\")\n    .eventType(\"user.signup\")\n    .payload(\"\"\"{\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"}\"\"\")\n    .channels(arrayOf(\"project_123\", \"group_2\"))\n    .payloadRetentionPeriod(90)\n    .application(null)\n)"
+                        "source": "val messageOut = svix.message.create(\"app_id\", MessageIn()\n    .eventId(\"unique-msg-identifier\")\n    .eventType(\"user.signup\")\n    .payload(/* ... */)\n    .channels(arrayOf(\"project_123\", \"group_2\"))\n    .payloadRetentionPeriod(90)\n    .application(null)\n    .tags(arrayOf(\"my_tag\", \"other\"))\n    .transformationsParams(null)\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "MessageOut messageOut = svix.getMessage().create(\"app_id\", new MessageIn()\n    .eventId(\"unique-msg-identifier\")\n    .eventType(\"user.signup\")\n    .payload(\"{\\\"email\\\":\\\"test@example.com\\\",\\\"type\\\":\\\"user.created\\\",\\\"username\\\":\\\"test_user\\\"}\")\n    .channels(new String[]{\"project_123\", \"group_2\"})\n    .payloadRetentionPeriod(90)\n    .application(null)\n)"
+                        "source": "MessageOut messageOut = svix.getMessage().create(\"app_id\", new MessageIn()\n    .eventId(\"unique-msg-identifier\")\n    .eventType(\"user.signup\")\n    .payload(/* ... */)\n    .channels(new String[]{\"project_123\", \"group_2\"})\n    .payloadRetentionPeriod(90)\n    .application(null)\n    .tags(new String[]{\"my_tag\", \"other\"})\n    .transformationsParams(null)\n)"
                     },
                     {
                         "label": "Ruby",
                         "lang": "Ruby",
-                        "source": "message_out = svix.message.create(\"app_id\", Svix::MessageIn.new({\n    \"event_id\": \"unique-msg-identifier\",\n    \"event_type\": \"user.signup\",\n    \"payload\": {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    \"channels\": [\"project_123\", \"group_2\"],\n    \"payload_retention_period\": 90,\n    \"application\": nil\n}))"
+                        "source": "message_out = svix.message.create(\"app_id\", Svix::MessageIn.new({\n    \"event_id\": \"unique-msg-identifier\",\n    \"event_type\": \"user.signup\",\n    \"payload\": {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    \"channels\": [\"project_123\", \"group_2\"],\n    \"payload_retention_period\": 90,\n    \"application\": nil,\n    \"tags\": [\"my_tag\", \"other\"],\n    \"transformations_params\": nil\n}))"
                     },
                     {
                         "label": "Rust",
                         "lang": "Rust",
-                        "source": "let message_out = svix.message().create(\"app_id\", MessageIn {\n    event_id: Some(\"unique-msg-identifier\".to_string()),\n    event_type: \"user.signup\".to_string(),\n    payload: json!({\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"}),\n    channels: Some(vec![\"project_123\".to_string(), \"group_2\".to_string()]),\n    payload_retention_period: Some(90),\n    application: None,\n}, None).await?;"
+                        "source": "let message_out = svix.message().create(\"app_id\", MessageIn {\n    event_id: Some(\"unique-msg-identifier\".to_string()),\n    event_type: \"user.signup\".to_string(),\n    payload: json!({\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"}),\n    channels: Some(vec![\"project_123\".to_string(), \"group_2\".to_string()]),\n    payload_retention_period: Some(90),\n    application: None,\n    tags: Some(vec![\"my_tag\".to_string(), \"other\".to_string()]),\n    transformations_params: None,\n}, None).await?;"
                     },
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "var messageOut = await svix.Message.CreateAsync(\"app_id\", new MessageIn{\n    eventId: \"unique-msg-identifier\",\n    eventType: \"user.signup\",\n    payload: new {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    channels: new string[] {\"project_123\", \"group_2\"},\n    payloadRetentionPeriod: 90,\n    application: null\n})"
+                        "source": "var messageOut = await svix.Message.CreateAsync(\"app_id\", new MessageIn{\n    eventId: \"unique-msg-identifier\",\n    eventType: \"user.signup\",\n    payload: /* ... */,\n    channels: new string[] {\"project_123\", \"group_2\"},\n    payloadRetentionPeriod: 90,\n    application: null,\n    tags: new string[] {\"my_tag\", \"other\"},\n    transformationsParams: null\n})"
                     },
                     {
                         "label": "CLI",
                         "lang": "Shell",
-                        "source": "svix message create \"app_id\" '{\n    \"eventId\": \"unique-msg-identifier\",\n    \"eventType\": \"user.signup\",\n    \"payload\": {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    \"channels\": [\"project_123\", \"group_2\"],\n    \"payloadRetentionPeriod\": 90,\n    \"application\": null\n}'"
+                        "source": "svix message create \"app_id\" '{\n    \"eventId\": \"unique-msg-identifier\",\n    \"eventType\": \"user.signup\",\n    \"payload\": {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n    \"channels\": [\"project_123\", \"group_2\"],\n    \"payloadRetentionPeriod\": 90,\n    \"application\": null,\n    \"tags\": [\"my_tag\", \"other\"],\n    \"transformationsParams\": null\n}'"
                     },
                     {
                         "label": "cURL",
                         "lang": "Shell",
-                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/app/{app_id}/msg/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"eventId\": \"unique-msg-identifier\",\n        \"eventType\": \"user.signup\",\n        \"payload\": {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n        \"channels\": [\"project_123\", \"group_2\"],\n        \"payloadRetentionPeriod\": 90,\n        \"application\": null\n    }'"
+                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/app/{app_id}/msg/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"eventId\": \"unique-msg-identifier\",\n        \"eventType\": \"user.signup\",\n        \"payload\": {\"email\":\"test@example.com\",\"type\":\"user.created\",\"username\":\"test_user\"},\n        \"channels\": [\"project_123\", \"group_2\"],\n        \"payloadRetentionPeriod\": 90,\n        \"application\": null,\n        \"tags\": [\"my_tag\", \"other\"],\n        \"transformationsParams\": null\n    }'"
                     }
                 ]
             }
@@ -15132,30 +16045,9 @@
             }
         },
         "/api/v1/environment/export/": {
-            "post": {
+            "get": {
                 "description": "Download a JSON file containing all org-settings and event types",
-                "operationId": "v1.environment.export",
-                "parameters": [
-                    {
-                        "description": "The request's idempotency key",
-                        "in": "header",
-                        "name": "idempotency-key",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "style": "simple"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ExportEnvironmentIn"
-                            }
-                        }
-                    },
-                    "required": true
-                },
+                "operationId": "v1.environment.export.get",
                 "responses": {
                     "200": {
                         "content": {
@@ -15251,62 +16143,230 @@
                     {
                         "label": "JavaScript",
                         "lang": "JavaScript",
-                        "source": "const environmentOut = await svix.environment.export(\n});"
+                        "source": "const environmentOut = await svix.environment.export();"
                     },
                     {
                         "label": "TypeScript",
                         "lang": "JavaScript",
-                        "source": "const environmentOut = await svix.environment.export(\n});"
+                        "source": "const environmentOut = await svix.environment.export();"
                     },
                     {
                         "label": "Python",
                         "lang": "Python",
-                        "source": "environment_out = svix.environment.export(ExportEnvironmentIn\n), None)"
+                        "source": "environment_out = svix.environment.export()"
                     },
                     {
                         "label": "Python (Async)",
                         "lang": "Python",
-                        "source": "environment_out = await svix.environment.export(ExportEnvironmentIn\n), None)"
+                        "source": "environment_out = await svix.environment.export()"
                     },
                     {
                         "label": "Go",
                         "lang": "Go",
-                        "source": "environmentOut, err := svixClient.Environment.Export(ctx, &ExportEnvironmentIn{\n})"
+                        "source": "environmentOut, err := svixClient.Environment.Export(ctx)"
                     },
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "val environmentOut = svix.environment.export(ExportEnvironmentIn()\n)"
+                        "source": "val environmentOut = svix.environment.export()"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "EnvironmentOut environmentOut = svix.getEnvironment().export(new ExportEnvironmentIn()\n)"
+                        "source": "EnvironmentOut environmentOut = svix.getEnvironment().export()"
                     },
                     {
                         "label": "Ruby",
                         "lang": "Ruby",
-                        "source": "environment_out = svix.environment.export(Svix::ExportEnvironmentIn.new(\n}))"
+                        "source": "environment_out = svix.environment.export()"
                     },
                     {
                         "label": "Rust",
                         "lang": "Rust",
-                        "source": "let environment_out = svix.environment().export(ExportEnvironmentIn {\n}, None).await?;"
+                        "source": "let environment_out = svix.environment().export().await?;"
                     },
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "var environmentOut = await svix.Environment.ExportAsync(new ExportEnvironmentIn\n})"
+                        "source": "var environmentOut = await svix.Environment.ExportAsync()"
                     },
                     {
                         "label": "CLI",
                         "lang": "Shell",
-                        "source": "svix environment export '\n}'"
+                        "source": "svix environment export "
                     },
                     {
                         "label": "cURL",
                         "lang": "Shell",
-                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/environment/export/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '\n    }'"
+                        "source": "curl -X 'GET' \\\n  'https://api.eu.svix.com/api/v1/environment/export/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json'"
+                    }
+                ]
+            },
+            "post": {
+                "description": "Download a JSON file containing all org-settings and event types",
+                "operationId": "v1.environment.export",
+                "parameters": [
+                    {
+                        "description": "The request's idempotency key",
+                        "in": "header",
+                        "name": "idempotency-key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EnvironmentOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Export Environment Configuration",
+                "tags": [
+                    "Environment"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const environmentOut = await svix.environment.export();"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const environmentOut = await svix.environment.export();"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "environment_out = svix.environment.export(None)"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "environment_out = await svix.environment.export(None)"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "environmentOut, err := svixClient.Environment.Export(ctx)"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val environmentOut = svix.environment.export()"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "EnvironmentOut environmentOut = svix.getEnvironment().export()"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "environment_out = svix.environment.export()"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let environment_out = svix.environment().export(None).await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var environmentOut = await svix.Environment.ExportAsync()"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix environment export "
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/environment/export/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json'"
                     }
                 ]
             }
@@ -16007,12 +17067,12 @@
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "val eventTypeOut = svix.eventType.create(EventTypeIn()\n    .name(\"user.signup\")\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(\"\"\"{\"1\":{\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}}\"\"\")\n    .featureFlag(\"cool-new-feature\")\n)"
+                        "source": "val eventTypeOut = svix.eventType.create(EventTypeIn()\n    .name(\"user.signup\")\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(/* ... */)\n    .featureFlag(\"cool-new-feature\")\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "EventTypeOut eventTypeOut = svix.getEventType().create(new EventTypeIn()\n    .name(\"user.signup\")\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(\"{\\\"1\\\":{\\\"description\\\":\\\"An invoice was paid by a user\\\",\\\"properties\\\":{\\\"invoiceId\\\":{\\\"description\\\":\\\"The invoice id\\\",\\\"type\\\":\\\"string\\\"},\\\"userId\\\":{\\\"description\\\":\\\"The user id\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"invoiceId\\\",\\\"userId\\\"],\\\"title\\\":\\\"Invoice Paid Event\\\",\\\"type\\\":\\\"object\\\"}}\")\n    .featureFlag(\"cool-new-feature\")\n)"
+                        "source": "EventTypeOut eventTypeOut = svix.getEventType().create(new EventTypeIn()\n    .name(\"user.signup\")\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(/* ... */)\n    .featureFlag(\"cool-new-feature\")\n)"
                     },
                     {
                         "label": "Ruby",
@@ -16027,7 +17087,7 @@
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "var eventTypeOut = await svix.EventType.CreateAsync(new EventTypeIn{\n    name: \"user.signup\",\n    description: \"A user has signed up\",\n    archived: false,\n    schemas: new {\"1\":{\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}},\n    featureFlag: \"cool-new-feature\"\n})"
+                        "source": "var eventTypeOut = await svix.EventType.CreateAsync(new EventTypeIn{\n    name: \"user.signup\",\n    description: \"A user has signed up\",\n    archived: false,\n    schemas: /* ... */,\n    featureFlag: \"cool-new-feature\"\n})"
                     },
                     {
                         "label": "CLI",
@@ -16333,62 +17393,62 @@
                     {
                         "label": "JavaScript",
                         "lang": "JavaScript",
-                        "source": "const eventTypeImportOpenApiOut = await svix.eventType.importOpenapi({\n    spec: {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    specRaw: {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n});"
+                        "source": "const eventTypeImportOpenApiOut = await svix.eventType.importOpenapi({\n    spec: {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    specRaw: {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n});"
                     },
                     {
                         "label": "TypeScript",
                         "lang": "JavaScript",
-                        "source": "const eventTypeImportOpenApiOut = await svix.eventType.importOpenapi({\n    spec: {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    specRaw: {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n});"
+                        "source": "const eventTypeImportOpenApiOut = await svix.eventType.importOpenapi({\n    spec: {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    specRaw: {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n});"
                     },
                     {
                         "label": "Python",
                         "lang": "Python",
-                        "source": "event_type_import_open_api_out = svix.event_type.import_openapi(EventTypeImportOpenApiIn(\n    spec={\"components\": {\"schemas\": {\"Pet\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"$ref\": \"#/components/schemas/Pet\"}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    spec_raw={\"components\": {\"schemas\": {\"Pet\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"$ref\": \"#/components/schemas/Pet\"}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n), None)"
+                        "source": "event_type_import_open_api_out = svix.event_type.import_openapi(EventTypeImportOpenApiIn(\n    spec={\"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    spec_raw={\"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n), None)"
                     },
                     {
                         "label": "Python (Async)",
                         "lang": "Python",
-                        "source": "event_type_import_open_api_out = await svix.event_type.import_openapi(EventTypeImportOpenApiIn(\n    spec={\"components\": {\"schemas\": {\"Pet\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"$ref\": \"#/components/schemas/Pet\"}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    spec_raw={\"components\": {\"schemas\": {\"Pet\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"$ref\": \"#/components/schemas/Pet\"}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n), None)"
+                        "source": "event_type_import_open_api_out = await svix.event_type.import_openapi(EventTypeImportOpenApiIn(\n    spec={\"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    spec_raw={\"info\": {\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": {\"pet.new\": {\"post\": {\"requestBody\": {\"content\": {\"application/json\": {\"schema\": {\"properties\": {\"id\": {\"format\": \"int64\", \"type\": \"integer\"}, \"name\": {\"type\": \"string\"}, \"tag\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": {\"200\": {\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n), None)"
                     },
                     {
                         "label": "Go",
                         "lang": "Go",
-                        "source": "eventTypeImportOpenApiOut, err := svixClient.EventType.ImportOpenapi(ctx, &EventTypeImportOpenApiIn{\n    Spec: map[interface{}]interface{}{\"components\": map[interface{}]interface{}{\"schemas\": map[interface{}]interface{}{\"Pet\": map[interface{}]interface{}{\"properties\": map[interface{}]interface{}{\"id\": map[string]interface{}{\"format\": \"int64\", \"type\": \"integer\"}, \"name\": map[string]interface{}{\"type\": \"string\"}, \"tag\": map[string]interface{}{\"type\": \"string\"}}, \"required\": []string{\"id\", \"name\"}}}}, \"info\": map[string]interface{}{\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": map[interface{}]interface{}{\"pet.new\": map[interface{}]interface{}{\"post\": map[interface{}]interface{}{\"requestBody\": map[interface{}]interface{}{\"content\": map[interface{}]interface{}{\"application/json\": map[interface{}]interface{}{\"schema\": map[string]interface{}{\"$ref\": \"#/components/schemas/Pet\"}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": map[interface{}]interface{}{\"200\": map[string]interface{}{\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    SpecRaw: map[interface{}]interface{}{\"components\": map[interface{}]interface{}{\"schemas\": map[interface{}]interface{}{\"Pet\": map[interface{}]interface{}{\"properties\": map[interface{}]interface{}{\"id\": map[string]interface{}{\"format\": \"int64\", \"type\": \"integer\"}, \"name\": map[string]interface{}{\"type\": \"string\"}, \"tag\": map[string]interface{}{\"type\": \"string\"}}, \"required\": []string{\"id\", \"name\"}}}}, \"info\": map[string]interface{}{\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": map[interface{}]interface{}{\"pet.new\": map[interface{}]interface{}{\"post\": map[interface{}]interface{}{\"requestBody\": map[interface{}]interface{}{\"content\": map[interface{}]interface{}{\"application/json\": map[interface{}]interface{}{\"schema\": map[string]interface{}{\"$ref\": \"#/components/schemas/Pet\"}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": map[interface{}]interface{}{\"200\": map[string]interface{}{\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n})"
+                        "source": "eventTypeImportOpenApiOut, err := svixClient.EventType.ImportOpenapi(ctx, &EventTypeImportOpenApiIn{\n    Spec: map[interface{}]interface{}{\"info\": map[string]interface{}{\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": map[interface{}]interface{}{\"pet.new\": map[interface{}]interface{}{\"post\": map[interface{}]interface{}{\"requestBody\": map[interface{}]interface{}{\"content\": map[interface{}]interface{}{\"application/json\": map[interface{}]interface{}{\"schema\": map[interface{}]interface{}{\"properties\": map[interface{}]interface{}{\"id\": map[string]interface{}{\"format\": \"int64\", \"type\": \"integer\"}, \"name\": map[string]interface{}{\"type\": \"string\"}, \"tag\": map[string]interface{}{\"type\": \"string\"}}, \"required\": []string{\"id\", \"name\"}}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": map[interface{}]interface{}{\"200\": map[string]interface{}{\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    SpecRaw: map[interface{}]interface{}{\"info\": map[string]interface{}{\"title\": \"Webhook Example\", \"version\": \"1.0.0\"}, \"openapi\": \"3.1.0\", \"webhooks\": map[interface{}]interface{}{\"pet.new\": map[interface{}]interface{}{\"post\": map[interface{}]interface{}{\"requestBody\": map[interface{}]interface{}{\"content\": map[interface{}]interface{}{\"application/json\": map[interface{}]interface{}{\"schema\": map[interface{}]interface{}{\"properties\": map[interface{}]interface{}{\"id\": map[string]interface{}{\"format\": \"int64\", \"type\": \"integer\"}, \"name\": map[string]interface{}{\"type\": \"string\"}, \"tag\": map[string]interface{}{\"type\": \"string\"}}, \"required\": []string{\"id\", \"name\"}}}}, \"description\": \"Information about a new pet in the system\"}, \"responses\": map[interface{}]interface{}{\"200\": map[string]interface{}{\"description\": \"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n})"
                     },
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "val eventTypeImportOpenApiOut = svix.eventType.importOpenapi(EventTypeImportOpenApiIn()\n    .spec(\"\"\"{\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\"\"\")\n    .specRaw(\"\"\"{\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\"\"\")\n)"
+                        "source": "val eventTypeImportOpenApiOut = svix.eventType.importOpenapi(EventTypeImportOpenApiIn()\n    .spec(/* ... */)\n    .specRaw(/* ... */)\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "EventTypeImportOpenApiOut eventTypeImportOpenApiOut = svix.getEventType().importOpenapi(new EventTypeImportOpenApiIn()\n    .spec(\"{\\\"components\\\":{\\\"schemas\\\":{\\\"Pet\\\":{\\\"properties\\\":{\\\"id\\\":{\\\"format\\\":\\\"int64\\\",\\\"type\\\":\\\"integer\\\"},\\\"name\\\":{\\\"type\\\":\\\"string\\\"},\\\"tag\\\":{\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"id\\\",\\\"name\\\"]}}},\\\"info\\\":{\\\"title\\\":\\\"Webhook Example\\\",\\\"version\\\":\\\"1.0.0\\\"},\\\"openapi\\\":\\\"3.1.0\\\",\\\"webhooks\\\":{\\\"pet.new\\\":{\\\"post\\\":{\\\"requestBody\\\":{\\\"content\\\":{\\\"application/json\\\":{\\\"schema\\\":{\\\"$ref\\\":\\\"#/components/schemas/Pet\\\"}}},\\\"description\\\":\\\"Information about a new pet in the system\\\"},\\\"responses\\\":{\\\"200\\\":{\\\"description\\\":\\\"Return a 200 status to indicate that the data was received successfully\\\"}}}}}}\")\n    .specRaw(\"{\\\"components\\\":{\\\"schemas\\\":{\\\"Pet\\\":{\\\"properties\\\":{\\\"id\\\":{\\\"format\\\":\\\"int64\\\",\\\"type\\\":\\\"integer\\\"},\\\"name\\\":{\\\"type\\\":\\\"string\\\"},\\\"tag\\\":{\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"id\\\",\\\"name\\\"]}}},\\\"info\\\":{\\\"title\\\":\\\"Webhook Example\\\",\\\"version\\\":\\\"1.0.0\\\"},\\\"openapi\\\":\\\"3.1.0\\\",\\\"webhooks\\\":{\\\"pet.new\\\":{\\\"post\\\":{\\\"requestBody\\\":{\\\"content\\\":{\\\"application/json\\\":{\\\"schema\\\":{\\\"$ref\\\":\\\"#/components/schemas/Pet\\\"}}},\\\"description\\\":\\\"Information about a new pet in the system\\\"},\\\"responses\\\":{\\\"200\\\":{\\\"description\\\":\\\"Return a 200 status to indicate that the data was received successfully\\\"}}}}}}\")\n)"
+                        "source": "EventTypeImportOpenApiOut eventTypeImportOpenApiOut = svix.getEventType().importOpenapi(new EventTypeImportOpenApiIn()\n    .spec(/* ... */)\n    .specRaw(/* ... */)\n)"
                     },
                     {
                         "label": "Ruby",
                         "lang": "Ruby",
-                        "source": "event_type_import_open_api_out = svix.event_type.import_openapi(Svix::EventTypeImportOpenApiIn.new({\n    \"spec\": {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    \"spec_raw\": {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n}))"
+                        "source": "event_type_import_open_api_out = svix.event_type.import_openapi(Svix::EventTypeImportOpenApiIn.new({\n    \"spec\": {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    \"spec_raw\": {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n}))"
                     },
                     {
                         "label": "Rust",
                         "lang": "Rust",
-                        "source": "let event_type_import_open_api_out = svix.event_type().import_openapi(EventTypeImportOpenApiIn {\n    spec: Some(json!({\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}})),\n    spec_raw: Some(json!({\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}})),\n}, None).await?;"
+                        "source": "let event_type_import_open_api_out = svix.event_type().import_openapi(EventTypeImportOpenApiIn {\n    spec: Some(json!({\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}})),\n    spec_raw: Some(json!({\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}})),\n}, None).await?;"
                     },
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "var eventTypeImportOpenApiOut = await svix.EventType.ImportOpenapiAsync(new EventTypeImportOpenApiIn{\n    spec: new {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    specRaw: new {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n})"
+                        "source": "var eventTypeImportOpenApiOut = await svix.EventType.ImportOpenapiAsync(new EventTypeImportOpenApiIn{\n    spec: /* ... */,\n    specRaw: /* ... */\n})"
                     },
                     {
                         "label": "CLI",
                         "lang": "Shell",
-                        "source": "svix event-type import-openapi '{\n    \"spec\": {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    \"specRaw\": {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n}'"
+                        "source": "svix event-type import-openapi '{\n    \"spec\": {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n    \"specRaw\": {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n}'"
                     },
                     {
                         "label": "cURL",
                         "lang": "Shell",
-                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/event-type/import/openapi/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"spec\": {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n        \"specRaw\": {\"components\":{\"schemas\":{\"Pet\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Pet\"}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n    }'"
+                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/event-type/import/openapi/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"spec\": {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}},\n        \"specRaw\": {\"info\":{\"title\":\"Webhook Example\",\"version\":\"1.0.0\"},\"openapi\":\"3.1.0\",\"webhooks\":{\"pet.new\":{\"post\":{\"requestBody\":{\"content\":{\"application/json\":{\"schema\":{\"properties\":{\"id\":{\"format\":\"int64\",\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"tag\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\"]}}},\"description\":\"Information about a new pet in the system\"},\"responses\":{\"200\":{\"description\":\"Return a 200 status to indicate that the data was received successfully\"}}}}}}\n    }'"
                     }
                 ]
             }
@@ -16538,12 +17598,12 @@
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "val eventTypeExampleOut = svix.eventType.generateExample(EventTypeSchemaIn()\n    .schema(\"\"\"{\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}\"\"\")\n)"
+                        "source": "val eventTypeExampleOut = svix.eventType.generateExample(EventTypeSchemaIn()\n    .schema(/* ... */)\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "EventTypeExampleOut eventTypeExampleOut = svix.getEventType().generateExample(new EventTypeSchemaIn()\n    .schema(\"{\\\"description\\\":\\\"An invoice was paid by a user\\\",\\\"properties\\\":{\\\"invoiceId\\\":{\\\"description\\\":\\\"The invoice id\\\",\\\"type\\\":\\\"string\\\"},\\\"userId\\\":{\\\"description\\\":\\\"The user id\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"invoiceId\\\",\\\"userId\\\"],\\\"title\\\":\\\"Invoice Paid Event\\\",\\\"type\\\":\\\"object\\\"}\")\n)"
+                        "source": "EventTypeExampleOut eventTypeExampleOut = svix.getEventType().generateExample(new EventTypeSchemaIn()\n    .schema(/* ... */)\n)"
                     },
                     {
                         "label": "Ruby",
@@ -16558,7 +17618,7 @@
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "var eventTypeExampleOut = await svix.EventType.GenerateExampleAsync(new EventTypeSchemaIn{\n    schema: new {\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}\n})"
+                        "source": "var eventTypeExampleOut = await svix.EventType.GenerateExampleAsync(new EventTypeSchemaIn{\n    schema: /* ... */\n})"
                     },
                     {
                         "label": "CLI",
@@ -17073,12 +18133,12 @@
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "val eventTypeOut = svix.eventType.patch(\"event_type_name\", EventTypePatch()\n    .schemas(\"\"\"{\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}\"\"\")\n    .featureFlag(\"cool-new-feature\")\n)"
+                        "source": "val eventTypeOut = svix.eventType.patch(\"event_type_name\", EventTypePatch()\n    .schemas(/* ... */)\n    .featureFlag(\"cool-new-feature\")\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "EventTypeOut eventTypeOut = svix.getEventType().patch(\"event_type_name\", new EventTypePatch()\n    .schemas(\"{\\\"description\\\":\\\"An invoice was paid by a user\\\",\\\"properties\\\":{\\\"invoiceId\\\":{\\\"description\\\":\\\"The invoice id\\\",\\\"type\\\":\\\"string\\\"},\\\"userId\\\":{\\\"description\\\":\\\"The user id\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"invoiceId\\\",\\\"userId\\\"],\\\"title\\\":\\\"Invoice Paid Event\\\",\\\"type\\\":\\\"object\\\"}\")\n    .featureFlag(\"cool-new-feature\")\n)"
+                        "source": "EventTypeOut eventTypeOut = svix.getEventType().patch(\"event_type_name\", new EventTypePatch()\n    .schemas(/* ... */)\n    .featureFlag(\"cool-new-feature\")\n)"
                     },
                     {
                         "label": "Ruby",
@@ -17093,7 +18153,7 @@
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "var eventTypeOut = await svix.EventType.PatchAsync(\"event_type_name\", new EventTypePatch{\n    schemas: new {\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"},\n    featureFlag: \"cool-new-feature\"\n})"
+                        "source": "var eventTypeOut = await svix.EventType.PatchAsync(\"event_type_name\", new EventTypePatch{\n    schemas: /* ... */,\n    featureFlag: \"cool-new-feature\"\n})"
                     },
                     {
                         "label": "CLI",
@@ -17266,12 +18326,12 @@
                     {
                         "label": "Kotlin",
                         "lang": "Kotlin",
-                        "source": "val eventTypeOut = svix.eventType.update(\"event_type_name\", EventTypeUpdate()\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(\"\"\"{\"1\":{\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}}\"\"\")\n    .featureFlag(\"cool-new-feature\")\n)"
+                        "source": "val eventTypeOut = svix.eventType.update(\"event_type_name\", EventTypeUpdate()\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(/* ... */)\n    .featureFlag(\"cool-new-feature\")\n)"
                     },
                     {
                         "label": "Java",
                         "lang": "Java",
-                        "source": "EventTypeOut eventTypeOut = svix.getEventType().update(\"event_type_name\", new EventTypeUpdate()\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(\"{\\\"1\\\":{\\\"description\\\":\\\"An invoice was paid by a user\\\",\\\"properties\\\":{\\\"invoiceId\\\":{\\\"description\\\":\\\"The invoice id\\\",\\\"type\\\":\\\"string\\\"},\\\"userId\\\":{\\\"description\\\":\\\"The user id\\\",\\\"type\\\":\\\"string\\\"}},\\\"required\\\":[\\\"invoiceId\\\",\\\"userId\\\"],\\\"title\\\":\\\"Invoice Paid Event\\\",\\\"type\\\":\\\"object\\\"}}\")\n    .featureFlag(\"cool-new-feature\")\n)"
+                        "source": "EventTypeOut eventTypeOut = svix.getEventType().update(\"event_type_name\", new EventTypeUpdate()\n    .description(\"A user has signed up\")\n    .archived(false)\n    .schemas(/* ... */)\n    .featureFlag(\"cool-new-feature\")\n)"
                     },
                     {
                         "label": "Ruby",
@@ -17286,7 +18346,7 @@
                     {
                         "label": "C#",
                         "lang": "C#",
-                        "source": "var eventTypeOut = await svix.EventType.UpdateAsync(\"event_type_name\", new EventTypeUpdate{\n    description: \"A user has signed up\",\n    archived: false,\n    schemas: new {\"1\":{\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}},\n    featureFlag: \"cool-new-feature\"\n})"
+                        "source": "var eventTypeOut = await svix.EventType.UpdateAsync(\"event_type_name\", new EventTypeUpdate{\n    description: \"A user has signed up\",\n    archived: false,\n    schemas: /* ... */,\n    featureFlag: \"cool-new-feature\"\n})"
                     },
                     {
                         "label": "CLI",
@@ -17297,6 +18357,364 @@
                         "label": "cURL",
                         "lang": "Shell",
                         "source": "curl -X 'PUT' \\\n  'https://api.eu.svix.com/api/v1/event-type/{event_type_name}/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"description\": \"A user has signed up\",\n        \"archived\": false,\n        \"schemas\": {\"1\":{\"description\":\"An invoice was paid by a user\",\"properties\":{\"invoiceId\":{\"description\":\"The invoice id\",\"type\":\"string\"},\"userId\":{\"description\":\"The user id\",\"type\":\"string\"}},\"required\":[\"invoiceId\",\"userId\"],\"title\":\"Invoice Paid Event\",\"type\":\"object\"}},\n        \"featureFlag\": \"cool-new-feature\"\n    }'"
+                    }
+                ]
+            }
+        },
+        "/api/v1/event-type/{event_type_name}/retry-schedule/": {
+            "get": {
+                "description": "Gets the retry schedule for messages using the given event type",
+                "operationId": "v1.event-type.get-retry-schedule",
+                "parameters": [
+                    {
+                        "description": "The event type's name",
+                        "in": "path",
+                        "name": "event_type_name",
+                        "required": true,
+                        "schema": {
+                            "description": "The event type's name",
+                            "example": "user.signup",
+                            "maxLength": 256,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RetryScheduleInOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Get Retry Schedule",
+                "tags": [
+                    "Event Type"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const retryScheduleInOut = await svix.eventType.getRetrySchedule(\"event_type_name\");"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const retryScheduleInOut = await svix.eventType.getRetrySchedule(\"event_type_name\");"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "retry_schedule_in_out = svix.event_type.get_retry_schedule(\"event_type_name\")"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "retry_schedule_in_out = await svix.event_type.get_retry_schedule(\"event_type_name\")"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "retryScheduleInOut, err := svixClient.EventType.GetRetrySchedule(ctx, \"event_type_name\")"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val retryScheduleInOut = svix.eventType.getRetrySchedule(\"event_type_name\")"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "RetryScheduleInOut retryScheduleInOut = svix.getEventType().getRetrySchedule(\"event_type_name\")"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "retry_schedule_in_out = svix.event_type.get_retry_schedule(\"event_type_name\")"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let retry_schedule_in_out = svix.event_type().get_retry_schedule(\"event_type_name\").await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var retryScheduleInOut = await svix.EventType.GetRetryScheduleAsync(\"event_type_name\")"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix event-type get-retry-schedule \"event_type_name\""
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'GET' \\\n  'https://api.eu.svix.com/api/v1/event-type/{event_type_name}/retry-schedule/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json'"
+                    }
+                ]
+            },
+            "put": {
+                "description": "Sets a retry schedule for all messages using the given event type",
+                "operationId": "v1.event-type.update-retry-schedule",
+                "parameters": [
+                    {
+                        "description": "The event type's name",
+                        "in": "path",
+                        "name": "event_type_name",
+                        "required": true,
+                        "schema": {
+                            "description": "The event type's name",
+                            "example": "user.signup",
+                            "maxLength": 256,
+                            "pattern": "^[a-zA-Z0-9\\-_.]+$",
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RetryScheduleInOut"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RetryScheduleInOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Update Retry Schedule",
+                "tags": [
+                    "Event Type"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const retryScheduleInOut = await svix.eventType.updateRetrySchedule(\"event_type_name\", {\n    retrySchedule: null\n});"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const retryScheduleInOut = await svix.eventType.updateRetrySchedule(\"event_type_name\", {\n    retrySchedule: null\n});"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "retry_schedule_in_out = svix.event_type.update_retry_schedule(\"event_type_name\", RetryScheduleInOut(\n    retry_schedule=None\n))"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "retry_schedule_in_out = await svix.event_type.update_retry_schedule(\"event_type_name\", RetryScheduleInOut(\n    retry_schedule=None\n))"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "retryScheduleInOut, err := svixClient.EventType.UpdateRetrySchedule(ctx, \"event_type_name\", &RetryScheduleInOut{\n    RetrySchedule: nil,\n})"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val retryScheduleInOut = svix.eventType.updateRetrySchedule(\"event_type_name\", RetryScheduleInOut()\n    .retrySchedule(null)\n)"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "RetryScheduleInOut retryScheduleInOut = svix.getEventType().updateRetrySchedule(\"event_type_name\", new RetryScheduleInOut()\n    .retrySchedule(null)\n)"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "retry_schedule_in_out = svix.event_type.update_retry_schedule(\"event_type_name\", Svix::RetryScheduleInOut.new({\n    \"retry_schedule\": nil\n}))"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let retry_schedule_in_out = svix.event_type().update_retry_schedule(\"event_type_name\", RetryScheduleInOut {\n    retry_schedule: None,\n}).await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var retryScheduleInOut = await svix.EventType.UpdateRetryScheduleAsync(\"event_type_name\", new RetryScheduleInOut{\n    retrySchedule: null\n})"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix event-type update-retry-schedule \"event_type_name\" '{\n    \"retrySchedule\": null\n}'"
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'PUT' \\\n  'https://api.eu.svix.com/api/v1/event-type/{event_type_name}/retry-schedule/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"retrySchedule\": null\n    }'"
                     }
                 ]
             }
@@ -17983,8 +19401,8 @@
         },
         "/api/v1/stats/usage/app/": {
             "post": {
-                "description": "Creates a background task to calculate the message destinations for all applications in the environment.",
-                "operationId": "calculate_aggregate_app_stats",
+                "description": "Creates a background task to calculate the message destinations for all applications in the environment.\n\nNote that this endpoint is asynchronous. You will need to poll the `Get Background Task` endpoint to\nretrieve the results of the operation.",
+                "operationId": "v1.statistics.aggregate-app-stats",
                 "parameters": [
                     {
                         "description": "The request's idempotency key",
@@ -18093,9 +19511,230 @@
                         "HTTPBearer": []
                     }
                 ],
-                "summary": "Calculate Aggregate App Stats",
+                "summary": "Aggregate App Stats",
                 "tags": [
                     "Statistics"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const appUsageStatsOut = await svix.statistics.aggregateAppStats({\n    appIds: null\n});"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const appUsageStatsOut = await svix.statistics.aggregateAppStats({\n    appIds: null\n});"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "app_usage_stats_out = svix.statistics.aggregate_app_stats(AppUsageStatsIn(\n    app_ids=None\n), None)"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "app_usage_stats_out = await svix.statistics.aggregate_app_stats(AppUsageStatsIn(\n    app_ids=None\n), None)"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "appUsageStatsOut, err := svixClient.Statistics.AggregateAppStats(ctx, &AppUsageStatsIn{\n    AppIds: nil,\n})"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val appUsageStatsOut = svix.statistics.aggregateAppStats(AppUsageStatsIn()\n    .appIds(null)\n)"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "AppUsageStatsOut appUsageStatsOut = svix.getStatistics().aggregateAppStats(new AppUsageStatsIn()\n    .appIds(null)\n)"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "app_usage_stats_out = svix.statistics.aggregate_app_stats(Svix::AppUsageStatsIn.new({\n    \"app_ids\": nil\n}))"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let app_usage_stats_out = svix.statistics().aggregate_app_stats(AppUsageStatsIn {\n    app_ids: None,\n}, None).await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var appUsageStatsOut = await svix.Statistics.AggregateAppStatsAsync(new AppUsageStatsIn{\n    appIds: null\n})"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix statistics aggregate-app-stats '{\n    \"appIds\": null\n}'"
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/stats/usage/app/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"appIds\": null\n    }'"
+                    }
+                ]
+            }
+        },
+        "/api/v1/stats/usage/event-types/": {
+            "put": {
+                "description": "Creates a background task to calculate the listed event types for all apps in the organization.\n\nNote that this endpoint is asynchronous. You will need to poll the `Get Background Task` endpoint to\nretrieve the results of the operation.",
+                "operationId": "v1.statistics.aggregate-event-types",
+                "responses": {
+                    "202": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AggregateEventTypesOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Aggregate Event Types",
+                "tags": [
+                    "Statistics"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const aggregateEventTypesOut = await svix.statistics.aggregateEventTypes();"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const aggregateEventTypesOut = await svix.statistics.aggregateEventTypes();"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "aggregate_event_types_out = svix.statistics.aggregate_event_types()"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "aggregate_event_types_out = await svix.statistics.aggregate_event_types()"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "aggregateEventTypesOut, err := svixClient.Statistics.AggregateEventTypes(ctx)"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val aggregateEventTypesOut = svix.statistics.aggregateEventTypes()"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "AggregateEventTypesOut aggregateEventTypesOut = svix.getStatistics().aggregateEventTypes()"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "aggregate_event_types_out = svix.statistics.aggregate_event_types()"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let aggregate_event_types_out = svix.statistics().aggregate_event_types().await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var aggregateEventTypesOut = await svix.Statistics.AggregateEventTypesAsync()"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix statistics aggregate-event-types "
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'PUT' \\\n  'https://api.eu.svix.com/api/v1/stats/usage/event-types/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json'"
+                    }
                 ]
             }
         },
@@ -18469,6 +20108,186 @@
                         "label": "cURL",
                         "lang": "Shell",
                         "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/transformation-template/' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n        \"instructionsLink\": null,\n        \"filterTypes\": [\"user.signup\", \"user.deleted\"],\n        \"featureFlag\": \"cool-new-feature\"\n    }'"
+                    }
+                ]
+            }
+        },
+        "/api/v1/transformation-template/generate": {
+            "post": {
+                "description": "Use OpenAI's Completion API to generate code for a transformation template",
+                "operationId": "v1.transformation-template.generate",
+                "parameters": [
+                    {
+                        "description": "The request's idempotency key",
+                        "in": "header",
+                        "name": "idempotency-key",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GenerateIn"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenerateOut"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Not Found"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Conflict"
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        },
+                        "description": "Validation Error"
+                    },
+                    "429": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpErrorOut"
+                                }
+                            }
+                        },
+                        "description": "Too Many Requests"
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ],
+                "summary": "Generate",
+                "tags": [
+                    "Transformation Template"
+                ],
+                "x-codeSamples": [
+                    {
+                        "label": "JavaScript",
+                        "lang": "JavaScript",
+                        "source": "const generateOut = await svix.transformationTemplate.generate(\n});"
+                    },
+                    {
+                        "label": "TypeScript",
+                        "lang": "JavaScript",
+                        "source": "const generateOut = await svix.transformationTemplate.generate(\n});"
+                    },
+                    {
+                        "label": "Python",
+                        "lang": "Python",
+                        "source": "generate_out = svix.transformation_template.generate(GenerateIn\n), None)"
+                    },
+                    {
+                        "label": "Python (Async)",
+                        "lang": "Python",
+                        "source": "generate_out = await svix.transformation_template.generate(GenerateIn\n), None)"
+                    },
+                    {
+                        "label": "Go",
+                        "lang": "Go",
+                        "source": "generateOut, err := svixClient.TransformationTemplate.Generate(ctx, &GenerateIn{\n})"
+                    },
+                    {
+                        "label": "Kotlin",
+                        "lang": "Kotlin",
+                        "source": "val generateOut = svix.transformationTemplate.generate(GenerateIn()\n)"
+                    },
+                    {
+                        "label": "Java",
+                        "lang": "Java",
+                        "source": "GenerateOut generateOut = svix.getTransformationTemplate().generate(new GenerateIn()\n)"
+                    },
+                    {
+                        "label": "Ruby",
+                        "lang": "Ruby",
+                        "source": "generate_out = svix.transformation_template.generate(Svix::GenerateIn.new(\n}))"
+                    },
+                    {
+                        "label": "Rust",
+                        "lang": "Rust",
+                        "source": "let generate_out = svix.transformation_template().generate(GenerateIn {\n}, None).await?;"
+                    },
+                    {
+                        "label": "C#",
+                        "lang": "C#",
+                        "source": "var generateOut = await svix.TransformationTemplate.GenerateAsync(new GenerateIn\n})"
+                    },
+                    {
+                        "label": "CLI",
+                        "lang": "Shell",
+                        "source": "svix transformation-template generate '\n}'"
+                    },
+                    {
+                        "label": "cURL",
+                        "lang": "Shell",
+                        "source": "curl -X 'POST' \\\n  'https://api.eu.svix.com/api/v1/transformation-template/generate' \\\n  -H 'Authorization: Bearer AUTH_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '\n    }'"
                     }
                 ]
             }
@@ -19761,6 +21580,10 @@
         {
             "description": "The background tasks that have been executed for your environment.",
             "name": "Background Tasks"
+        },
+        {
+            "description": "Generate statistics about your Svix utilization",
+            "name": "Statistics"
         }
     ],
     "x-tagGroups": [
@@ -19793,6 +21616,12 @@
             "tags": [
                 "Webhooks"
             ]
+        },
+        {
+            "name": "Statistics",
+            "tags": [
+                "Statistics"
+            ]
         }
     ],
     "x-webhooks": {
@@ -19803,6 +21632,15 @@
                 "requestBody": {
                     "content": {
                         "application/json": {
+                            "example": {
+                                "data": {
+                                    "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "appUid": "unique-app-identifier",
+                                    "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "endpointUid": "unique-endpoint-identifier"
+                                },
+                                "type": "endpoint.created"
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/EndpointCreatedEvent"
                             }
@@ -19827,6 +21665,15 @@
                 "requestBody": {
                     "content": {
                         "application/json": {
+                            "example": {
+                                "data": {
+                                    "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "appUid": "unique-app-identifier",
+                                    "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "endpointUid": "unique-endpoint-identifier"
+                                },
+                                "type": "endpoint.deleted"
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/EndpointDeletedEvent"
                             }
@@ -19851,6 +21698,16 @@
                 "requestBody": {
                     "content": {
                         "application/json": {
+                            "example": {
+                                "data": {
+                                    "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "appUid": "unique-app-identifier",
+                                    "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "endpointUid": "unique-endpoint-identifier",
+                                    "failSince": "2022-11-06T15:04:05Z"
+                                },
+                                "type": "endpoint.disabled"
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/EndpointDisabledEvent"
                             }
@@ -19875,6 +21732,15 @@
                 "requestBody": {
                     "content": {
                         "application/json": {
+                            "example": {
+                                "data": {
+                                    "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "appUid": "unique-app-identifier",
+                                    "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "endpointUid": "unique-endpoint-identifier"
+                                },
+                                "type": "endpoint.updated"
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/EndpointUpdatedEvent"
                             }
@@ -19899,6 +21765,21 @@
                 "requestBody": {
                     "content": {
                         "application/json": {
+                            "example": {
+                                "data": {
+                                    "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "appUid": "unique-app-identifier",
+                                    "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "lastAttempt": {
+                                        "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                        "responseStatusCode": 500,
+                                        "timestamp": "2022-11-06T15:04:05Z"
+                                    },
+                                    "msgEventId": "unique-msg-identifier",
+                                    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+                                },
+                                "type": "message.attempt.exhausted"
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/MessageAttemptExhaustedEvent"
                             }
@@ -19923,6 +21804,21 @@
                 "requestBody": {
                     "content": {
                         "application/json": {
+                            "example": {
+                                "data": {
+                                    "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "appUid": "unique-app-identifier",
+                                    "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "lastAttempt": {
+                                        "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                        "responseStatusCode": 500,
+                                        "timestamp": "2022-11-06T15:04:05Z"
+                                    },
+                                    "msgEventId": "unique-msg-identifier",
+                                    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+                                },
+                                "type": "message.attempt.failing"
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/MessageAttemptFailingEvent"
                             }
@@ -19947,6 +21843,21 @@
                 "requestBody": {
                     "content": {
                         "application/json": {
+                            "example": {
+                                "data": {
+                                    "appId": "app_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "appUid": "unique-app-identifier",
+                                    "endpointId": "ep_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                    "lastAttempt": {
+                                        "id": "atmpt_1srOrx2ZWZBpBUvZwXKQmoEYga2",
+                                        "responseStatusCode": 200,
+                                        "timestamp": "2022-11-06T15:04:05Z"
+                                    },
+                                    "msgEventId": "unique-msg-identifier",
+                                    "msgId": "msg_1srOrx2ZWZBpBUvZwXKQmoEYga2"
+                                },
+                                "type": "message.attempt.recovered"
+                            },
                             "schema": {
                                 "$ref": "#/components/schemas/MessageAttemptRecoveredEvent"
                             }

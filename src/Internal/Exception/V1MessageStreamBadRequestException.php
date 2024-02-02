@@ -2,7 +2,7 @@
 
 namespace Svix\Internal\Exception;
 
-class CalculateAggregateAppStatsConflictException extends ConflictException
+class V1MessageStreamBadRequestException extends BadRequestException
 {
     /**
      * @var \Svix\Internal\Model\HttpErrorOut
@@ -14,7 +14,7 @@ class CalculateAggregateAppStatsConflictException extends ConflictException
     private $response;
     public function __construct(\Svix\Internal\Model\HttpErrorOut $httpErrorOut, \Psr\Http\Message\ResponseInterface $response)
     {
-        parent::__construct('Conflict');
+        parent::__construct('Bad request');
         $this->httpErrorOut = $httpErrorOut;
         $this->response = $response;
     }

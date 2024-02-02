@@ -21,22 +21,19 @@ readonly class EventTypes extends EndpointsGroup
     /**
      * Return the list of event types.
      *
-     * @param array $options
+     * @param array{
+     *     limit: ?int,
+     *     iterator: ?string,
+     *     order: ?string,
+     *     include_archived: bool,
+     *     with_content: bool,
+     * } $options
+     *
      * @return ListResponseEventTypeOut
      */
-    public function list(
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'order' => '?string',
-            'include_archived' => 'bool',
-            'with_content' => 'bool',
-        ])] array $options,
-    ): ListResponseEventTypeOut
+    public function list(array $options): ListResponseEventTypeOut
     {
-        $this->client->v1EventTypeList(
-            queryParameters: $options,
-        );
+        return $this->client->v1EventTypeList(queryParameters: $options);
     }
 
     /**
@@ -66,7 +63,7 @@ readonly class EventTypes extends EndpointsGroup
      */
     public function importOpenAPI(
         EventTypeImportOpenApiIn $openapi,
-        ?string $idempotencyKey = null,
+        ?string                  $idempotencyKey = null,
     ): EventTypeImportOpenApiOut
     {
         return $this->client->v1EventTypeImportOpenapi(

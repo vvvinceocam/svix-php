@@ -2,7 +2,7 @@
 
 namespace Svix\Internal\Exception;
 
-class CalculateAggregateAppStatsBadRequestException extends BadRequestException
+class V1EnvironmentExportGetNotFoundException extends NotFoundException
 {
     /**
      * @var \Svix\Internal\Model\HttpErrorOut
@@ -14,7 +14,7 @@ class CalculateAggregateAppStatsBadRequestException extends BadRequestException
     private $response;
     public function __construct(\Svix\Internal\Model\HttpErrorOut $httpErrorOut, \Psr\Http\Message\ResponseInterface $response)
     {
-        parent::__construct('Bad request');
+        parent::__construct('Not Found');
         $this->httpErrorOut = $httpErrorOut;
         $this->response = $response;
     }

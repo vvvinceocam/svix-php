@@ -27,7 +27,7 @@ class EnvironmentSettingsOut extends \ArrayObject
     /**
      * 
      *
-     * @var string|null
+     * @var string
      */
     protected $customColor;
     /**
@@ -41,6 +41,12 @@ class EnvironmentSettingsOut extends \ArrayObject
      *
      * @var string|null
      */
+    protected $customFontFamilyUrl;
+    /**
+     * 
+     *
+     * @var string|null
+     */
     protected $customLogoUrl;
     /**
      * 
@@ -48,6 +54,12 @@ class EnvironmentSettingsOut extends \ArrayObject
      * @var CustomThemeOverride
      */
     protected $customThemeOverride;
+    /**
+     * 
+     *
+     * @var string|null
+     */
+    protected $displayName;
     /**
      * 
      *
@@ -113,20 +125,20 @@ class EnvironmentSettingsOut extends \ArrayObject
     /**
      * 
      *
-     * @return string|null
+     * @return string
      */
-    public function getCustomColor() : ?string
+    public function getCustomColor() : string
     {
         return $this->customColor;
     }
     /**
      * 
      *
-     * @param string|null $customColor
+     * @param string $customColor
      *
      * @return self
      */
-    public function setCustomColor(?string $customColor) : self
+    public function setCustomColor(string $customColor) : self
     {
         $this->initialized['customColor'] = true;
         $this->customColor = $customColor;
@@ -152,6 +164,28 @@ class EnvironmentSettingsOut extends \ArrayObject
     {
         $this->initialized['customFontFamily'] = true;
         $this->customFontFamily = $customFontFamily;
+        return $this;
+    }
+    /**
+     * 
+     *
+     * @return string|null
+     */
+    public function getCustomFontFamilyUrl() : ?string
+    {
+        return $this->customFontFamilyUrl;
+    }
+    /**
+     * 
+     *
+     * @param string|null $customFontFamilyUrl
+     *
+     * @return self
+     */
+    public function setCustomFontFamilyUrl(?string $customFontFamilyUrl) : self
+    {
+        $this->initialized['customFontFamilyUrl'] = true;
+        $this->customFontFamilyUrl = $customFontFamilyUrl;
         return $this;
     }
     /**
@@ -196,6 +230,28 @@ class EnvironmentSettingsOut extends \ArrayObject
     {
         $this->initialized['customThemeOverride'] = true;
         $this->customThemeOverride = $customThemeOverride;
+        return $this;
+    }
+    /**
+     * 
+     *
+     * @return string|null
+     */
+    public function getDisplayName() : ?string
+    {
+        return $this->displayName;
+    }
+    /**
+     * 
+     *
+     * @param string|null $displayName
+     *
+     * @return self
+     */
+    public function setDisplayName(?string $displayName) : self
+    {
+        $this->initialized['displayName'] = true;
+        $this->displayName = $displayName;
         return $this;
     }
     /**

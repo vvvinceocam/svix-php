@@ -49,12 +49,9 @@ class EnvironmentSettingsOutNormalizer implements DenormalizerInterface, Normali
             $object->setColorPaletteLight($this->denormalizer->denormalize($data['colorPaletteLight'], 'Svix\\Internal\\Model\\CustomColorPalette', 'json', $context));
             unset($data['colorPaletteLight']);
         }
-        if (\array_key_exists('customColor', $data) && $data['customColor'] !== null) {
+        if (\array_key_exists('customColor', $data)) {
             $object->setCustomColor($data['customColor']);
             unset($data['customColor']);
-        }
-        elseif (\array_key_exists('customColor', $data) && $data['customColor'] === null) {
-            $object->setCustomColor(null);
         }
         if (\array_key_exists('customFontFamily', $data) && $data['customFontFamily'] !== null) {
             $object->setCustomFontFamily($data['customFontFamily']);
@@ -62,6 +59,13 @@ class EnvironmentSettingsOutNormalizer implements DenormalizerInterface, Normali
         }
         elseif (\array_key_exists('customFontFamily', $data) && $data['customFontFamily'] === null) {
             $object->setCustomFontFamily(null);
+        }
+        if (\array_key_exists('customFontFamilyUrl', $data) && $data['customFontFamilyUrl'] !== null) {
+            $object->setCustomFontFamilyUrl($data['customFontFamilyUrl']);
+            unset($data['customFontFamilyUrl']);
+        }
+        elseif (\array_key_exists('customFontFamilyUrl', $data) && $data['customFontFamilyUrl'] === null) {
+            $object->setCustomFontFamilyUrl(null);
         }
         if (\array_key_exists('customLogoUrl', $data) && $data['customLogoUrl'] !== null) {
             $object->setCustomLogoUrl($data['customLogoUrl']);
@@ -73,6 +77,13 @@ class EnvironmentSettingsOutNormalizer implements DenormalizerInterface, Normali
         if (\array_key_exists('customThemeOverride', $data)) {
             $object->setCustomThemeOverride($this->denormalizer->denormalize($data['customThemeOverride'], 'Svix\\Internal\\Model\\CustomThemeOverride', 'json', $context));
             unset($data['customThemeOverride']);
+        }
+        if (\array_key_exists('displayName', $data) && $data['displayName'] !== null) {
+            $object->setDisplayName($data['displayName']);
+            unset($data['displayName']);
+        }
+        elseif (\array_key_exists('displayName', $data) && $data['displayName'] === null) {
+            $object->setDisplayName(null);
         }
         if (\array_key_exists('enableChannels', $data)) {
             $object->setEnableChannels($data['enableChannels']);
@@ -111,11 +122,17 @@ class EnvironmentSettingsOutNormalizer implements DenormalizerInterface, Normali
         if ($object->isInitialized('customFontFamily') && null !== $object->getCustomFontFamily()) {
             $data['customFontFamily'] = $object->getCustomFontFamily();
         }
+        if ($object->isInitialized('customFontFamilyUrl') && null !== $object->getCustomFontFamilyUrl()) {
+            $data['customFontFamilyUrl'] = $object->getCustomFontFamilyUrl();
+        }
         if ($object->isInitialized('customLogoUrl') && null !== $object->getCustomLogoUrl()) {
             $data['customLogoUrl'] = $object->getCustomLogoUrl();
         }
         if ($object->isInitialized('customThemeOverride') && null !== $object->getCustomThemeOverride()) {
             $data['customThemeOverride'] = $this->normalizer->normalize($object->getCustomThemeOverride(), 'json', $context);
+        }
+        if ($object->isInitialized('displayName') && null !== $object->getDisplayName()) {
+            $data['displayName'] = $object->getDisplayName();
         }
         if ($object->isInitialized('enableChannels') && null !== $object->getEnableChannels()) {
             $data['enableChannels'] = $object->getEnableChannels();

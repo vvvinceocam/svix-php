@@ -2,6 +2,7 @@
 
 namespace Svix;
 
+use DateTimeInterface;
 use JetBrains\PhpStorm\ArrayShape;
 use Svix\BaseApi\EndpointsGroup;
 use Svix\Internal\Model\ListResponseEndpointMessageOut;
@@ -19,23 +20,24 @@ readonly class MessageAttempts extends EndpointsGroup
      *
      * @param string $appID The app's ID or UID
      * @param string $endpointID Endpoint's ID or UID
-     * @param array $options
+     * @param array{
+     *     limit?: int,
+     *     iterator?: string,
+     *     status?: int,
+     *     status_code_class?: int,
+     *     channel?: string,
+     *     before?: DateTimeInterface,
+     *     after?: DateTimeInterface,
+     *     with_content?: bool,
+     *     event_types?: string[],
+     * } $options
+     *
      * @return ListResponseMessageAttemptOut
      */
     public function listByEndpoint(
-        string    $appID,
-        string    $endpointID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'status' => '?int',
-            'status_code_class' => '?int',
-            'channel' => '?string',
-            'before' => '?DateTimeInterface',
-            'after' => '?DateTimeInterface',
-            'with_content' => '?bool',
-            'event_types' => '?[]string',
-        ])] array $options = [],
+        string $appID,
+        string $endpointID,
+        array  $options = [],
     ): ListResponseMessageAttemptOut
     {
         return $this->client->v1MessageAttemptListByEndpoint(
@@ -50,24 +52,25 @@ readonly class MessageAttempts extends EndpointsGroup
      *
      * @param string $appID The app's ID or UID
      * @param string $messageID Message's ID or UID
-     * @param array $options
+     * @param array{
+     *      limit?: int,
+     *      iterator?: string,
+     *      status?: int,
+     *      status_code_class?: int,
+     *      channel?: string,
+     *      endpoint_id?: string,
+     *      before?: DateTimeInterface,
+     *      after?: DateTimeInterface,
+     *      with_content?: bool,
+     *      event_types?: string[],
+     *  } $options
+     *
      * @return ListResponseMessageAttemptOut
      */
     public function listByMessage(
-        string    $appID,
-        string    $messageID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'status' => '?int',
-            'status_code_class' => '?int',
-            'channel' => '?string',
-            'endpoint_id' => '?string',
-            'before' => '?DateTimeInterface',
-            'after' => '?DateTimeInterface',
-            'with_content' => '?bool',
-            'event_types' => '?[]string',
-        ])] array $options = [],
+        string $appID,
+        string $messageID,
+        array  $options = [],
     ): ListResponseMessageAttemptOut
     {
         return $this->client->v1MessageAttemptListByMsg(
@@ -82,22 +85,23 @@ readonly class MessageAttempts extends EndpointsGroup
      *
      * @param string $appID The app's ID or UID
      * @param string $endpointID Endpoint's ID or UID
-     * @param array $options
+     * @param array{
+     *      limit?: int,
+     *      iterator?: string,
+     *      status?: int,
+     *      channel?: string,
+     *      before?: DateTimeInterface,
+     *      after?: DateTimeInterface,
+     *      with_content?: bool,
+     *      event_types?: string[],
+     *  } $options
+     *
      * @return ListResponseEndpointMessageOut
      */
     public function listAttemptedMessages(
-        string    $appID,
-        string    $endpointID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'status' => '?int',
-            'channel' => '?string',
-            'before' => '?DateTimeInterface',
-            'after' => '?DateTimeInterface',
-            'with_content' => '?bool',
-            'event_types' => '?[]string',
-        ])] array $options = [],
+        string $appID,
+        string $endpointID,
+        array  $options = [],
     ): ListResponseEndpointMessageOut
     {
         return $this->client->v1MessageAttemptListAttemptedMessages(
@@ -113,16 +117,17 @@ readonly class MessageAttempts extends EndpointsGroup
      *
      * @param string $appID The app's ID or UID
      * @param string $messageID Message's ID or UID
-     * @param array $options
+     * @param array{
+     *     limit?: int,
+     *     iterator?: string,
+     * } $options
+     *
      * @return ListResponseMessageEndpointOut
      */
     public function listAttemptedDestinations(
-        string    $appID,
-        string    $messageID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-        ])] array $options = [],
+        string $appID,
+        string $messageID,
+        array  $options = [],
     ): ListResponseMessageEndpointOut
     {
         return $this->client->v1MessageAttemptListAttemptedDestinations(
@@ -137,25 +142,26 @@ readonly class MessageAttempts extends EndpointsGroup
      *
      * @param string $appID The app's ID or UID
      * @param string $messageID Message's ID or UID
-     * @param array $options
+     * @param array{
+     *     limit?: int,
+     *     iterator?: string,
+     *     endpoint_id?: string,
+     *     status?: int,
+     *     status_code_class?: int,
+     *     channel?: string,
+     *     before?: DateTimeInterface,
+     *     after?: DateTimeInterface,
+     *     event_type?: string[],
+     * } $options
+     *
      * @return ListResponseMessageAttemptOut
      *
      * @deprecated please use `listByMessage()`
      */
     public function listByMessageDeprecated(
-        string    $appID,
-        string    $messageID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'endpoint_id' => '?string',
-            'status' => '?int',
-            'status_code_class' => '?int',
-            'channel' => '?string',
-            'before' => '?DateTimeInterface',
-            'after' => '?DateTimeInterface',
-            'event_types' => '?[]string',
-        ])] array $options = [],
+        string $appID,
+        string $messageID,
+        array  $options = [],
     ): ListResponseMessageAttemptOut
     {
         return $this->client->v1MessageAttemptListByMsgDeprecated(
@@ -171,24 +177,25 @@ readonly class MessageAttempts extends EndpointsGroup
      * @param string $appID The app's ID or UID
      * @param string $messageID Message's ID or UID
      * @param string $endpointID Endpoint's ID or UID
-     * @param array $options
+     * @param array{
+     *      limit?: int,
+     *      iterator?: string,
+     *      status?: int,
+     *      channel?: string,
+     *      before?: DateTimeInterface,
+     *      after?: DateTimeInterface,
+     *      event_type?: string[],
+     *  } $options
+     *
      * @return ListResponseMessageAttemptEndpointOut
      *
      * @deprecated please use `listByEndpoint()`
      **/
     public function listByEndpointDeprecated(
-        string    $appID,
-        string    $messageID,
-        string    $endpointID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'status' => '?int',
-            'channel' => '?string',
-            'before' => '?DateTimeInterface',
-            'after' => '?DateTimeInterface',
-            'event_types' => '?[]string',
-        ])] array $options = [],
+        string $appID,
+        string $messageID,
+        string $endpointID,
+        array  $options = [],
     ): ListResponseMessageAttemptEndpointOut
     {
         return $this->client->v1MessageAttemptListByEndpointDeprecated(

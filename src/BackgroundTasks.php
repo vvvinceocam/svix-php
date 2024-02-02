@@ -2,7 +2,6 @@
 
 namespace Svix;
 
-use JetBrains\PhpStorm\ArrayShape;
 use Svix\BaseApi\EndpointsGroup;
 use Svix\Internal\Model\BackgroundTaskOut;
 use Svix\Internal\Model\ListResponseBackgroundTaskOut;
@@ -15,18 +14,17 @@ readonly class BackgroundTasks extends EndpointsGroup
     /**
      * List background tasks executed in the past 90 days.
      *
-     * @param array $options
+     * @param array{
+     *     limit: ?int,
+     *     iterator: ?string,
+     *     order: ?string,
+     *     task: ?string,
+     *     status: ?string,
+     * } $options
+     *
      * @return ListResponseBackgroundTaskOut
      */
-    public function list(
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'order' => '?string',
-            'task' => '?string',
-            'status' => '?string',
-        ])] array $options,
-    ): ListResponseBackgroundTaskOut
+    public function list(array $options): ListResponseBackgroundTaskOut
     {
         return $this->client->listBackgroundTasks(
             queryParameters: $options,

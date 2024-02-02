@@ -41,47 +41,41 @@ class CustomColorPaletteNormalizer implements DenormalizerInterface, NormalizerI
         if (null === $data || false === \is_array($data)) {
             return $object;
         }
-        if (\array_key_exists('backgroundHover', $data) && $data['backgroundHover'] !== null) {
+        if (\array_key_exists('backgroundHover', $data)) {
             $object->setBackgroundHover($data['backgroundHover']);
             unset($data['backgroundHover']);
         }
-        elseif (\array_key_exists('backgroundHover', $data) && $data['backgroundHover'] === null) {
-            $object->setBackgroundHover(null);
-        }
-        if (\array_key_exists('backgroundPrimary', $data) && $data['backgroundPrimary'] !== null) {
+        if (\array_key_exists('backgroundPrimary', $data)) {
             $object->setBackgroundPrimary($data['backgroundPrimary']);
             unset($data['backgroundPrimary']);
         }
-        elseif (\array_key_exists('backgroundPrimary', $data) && $data['backgroundPrimary'] === null) {
-            $object->setBackgroundPrimary(null);
-        }
-        if (\array_key_exists('backgroundSecondary', $data) && $data['backgroundSecondary'] !== null) {
+        if (\array_key_exists('backgroundSecondary', $data)) {
             $object->setBackgroundSecondary($data['backgroundSecondary']);
             unset($data['backgroundSecondary']);
         }
-        elseif (\array_key_exists('backgroundSecondary', $data) && $data['backgroundSecondary'] === null) {
-            $object->setBackgroundSecondary(null);
+        if (\array_key_exists('buttonPrimary', $data)) {
+            $object->setButtonPrimary($data['buttonPrimary']);
+            unset($data['buttonPrimary']);
         }
-        if (\array_key_exists('interactiveAccent', $data) && $data['interactiveAccent'] !== null) {
+        if (\array_key_exists('interactiveAccent', $data)) {
             $object->setInteractiveAccent($data['interactiveAccent']);
             unset($data['interactiveAccent']);
         }
-        elseif (\array_key_exists('interactiveAccent', $data) && $data['interactiveAccent'] === null) {
-            $object->setInteractiveAccent(null);
+        if (\array_key_exists('navigationAccent', $data)) {
+            $object->setNavigationAccent($data['navigationAccent']);
+            unset($data['navigationAccent']);
         }
-        if (\array_key_exists('textDanger', $data) && $data['textDanger'] !== null) {
+        if (\array_key_exists('primary', $data)) {
+            $object->setPrimary($data['primary']);
+            unset($data['primary']);
+        }
+        if (\array_key_exists('textDanger', $data)) {
             $object->setTextDanger($data['textDanger']);
             unset($data['textDanger']);
         }
-        elseif (\array_key_exists('textDanger', $data) && $data['textDanger'] === null) {
-            $object->setTextDanger(null);
-        }
-        if (\array_key_exists('textPrimary', $data) && $data['textPrimary'] !== null) {
+        if (\array_key_exists('textPrimary', $data)) {
             $object->setTextPrimary($data['textPrimary']);
             unset($data['textPrimary']);
-        }
-        elseif (\array_key_exists('textPrimary', $data) && $data['textPrimary'] === null) {
-            $object->setTextPrimary(null);
         }
         foreach ($data as $key => $value) {
             if (preg_match('/.*/', (string) $key)) {
@@ -105,8 +99,17 @@ class CustomColorPaletteNormalizer implements DenormalizerInterface, NormalizerI
         if ($object->isInitialized('backgroundSecondary') && null !== $object->getBackgroundSecondary()) {
             $data['backgroundSecondary'] = $object->getBackgroundSecondary();
         }
+        if ($object->isInitialized('buttonPrimary') && null !== $object->getButtonPrimary()) {
+            $data['buttonPrimary'] = $object->getButtonPrimary();
+        }
         if ($object->isInitialized('interactiveAccent') && null !== $object->getInteractiveAccent()) {
             $data['interactiveAccent'] = $object->getInteractiveAccent();
+        }
+        if ($object->isInitialized('navigationAccent') && null !== $object->getNavigationAccent()) {
+            $data['navigationAccent'] = $object->getNavigationAccent();
+        }
+        if ($object->isInitialized('primary') && null !== $object->getPrimary()) {
+            $data['primary'] = $object->getPrimary();
         }
         if ($object->isInitialized('textDanger') && null !== $object->getTextDanger()) {
             $data['textDanger'] = $object->getTextDanger();

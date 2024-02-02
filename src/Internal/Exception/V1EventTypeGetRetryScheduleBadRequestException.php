@@ -2,7 +2,7 @@
 
 namespace Svix\Internal\Exception;
 
-class CalculateAggregateAppStatsForbiddenException extends ForbiddenException
+class V1EventTypeGetRetryScheduleBadRequestException extends BadRequestException
 {
     /**
      * @var \Svix\Internal\Model\HttpErrorOut
@@ -14,7 +14,7 @@ class CalculateAggregateAppStatsForbiddenException extends ForbiddenException
     private $response;
     public function __construct(\Svix\Internal\Model\HttpErrorOut $httpErrorOut, \Psr\Http\Message\ResponseInterface $response)
     {
-        parent::__construct('Forbidden');
+        parent::__construct('Bad request');
         $this->httpErrorOut = $httpErrorOut;
         $this->response = $response;
     }

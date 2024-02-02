@@ -2,7 +2,7 @@
 
 namespace Svix;
 
-use JetBrains\PhpStorm\ArrayShape;
+use DateTimeInterface;
 use Svix\BaseApi\EndpointsGroup;
 use Svix\Internal\Model\ListResponseMessageOut;
 use Svix\Internal\Model\MessageIn;
@@ -17,21 +17,18 @@ readonly class Messages extends EndpointsGroup
      * List all the application's messages.
      *
      * @param string $appID The app's ID or UID
-     * @param array $options
+     * @param array{
+     *     limit?: int,
+     *     iterator?: string,
+     *     channel?: string,
+     *     before?: DateTimeInterface,
+     *     after?: DateTimeInterface,
+     *     with_content?: bool,
+     *     event_type?: string[],
+     * } $options
      * @return ListResponseMessageOut
      */
-    public function list(
-        string    $appID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-            'channel' => '?string',
-            'before' => '?DateTimeInterface',
-            'after' => '?DateTimeInterface',
-            'with_content' => '?bool',
-            'event_types' => '?[]string',
-        ])] array $options = []
-    ): ListResponseMessageOut
+    public function list(string $appID, array $options = []): ListResponseMessageOut
     {
         return $this->client->v1MessageList($appID, $options);
     }

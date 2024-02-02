@@ -174,6 +174,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *     @var string $before Only include items created before a certain date
     *     @var string $after Only include items created after a certain date
     *     @var bool $with_content When `true` attempt content is included in the response
+    *     @var bool $with_msg When `true`, the message information is included in the response
     *     @var array $event_types Filter response based on the event type
     * }
     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
@@ -694,6 +695,81 @@ class Client extends \Svix\Internal\Runtime\Client\Client
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointTransformationSimulate($appId, $endpointId, $requestBody, $headerParameters), $fetch);
     }
     /**
+     * Reads the stream of created messages for an application
+     *
+     * @param string $appId The app's ID or UID
+     * @param array $queryParameters {
+     *     @var int $limit Limit the number of returned items
+     *     @var string $iterator The iterator returned from a prior invocation
+     *     @var array $event_types Filter response based on the event type
+     *     @var array $channels Filter response based on the event type
+     * }
+     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+     * @throws \Svix\Internal\Exception\V1MessageStreamBadRequestException
+     * @throws \Svix\Internal\Exception\V1MessageStreamUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1MessageStreamForbiddenException
+     * @throws \Svix\Internal\Exception\V1MessageStreamNotFoundException
+     * @throws \Svix\Internal\Exception\V1MessageStreamConflictException
+     * @throws \Svix\Internal\Exception\V1MessageStreamUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1MessageStreamTooManyRequestsException
+     *
+     * @return null|\Svix\Internal\Model\MessageStreamOut|\Psr\Http\Message\ResponseInterface
+     */
+    public function v1MessageStream(string $appId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageStream($appId, $queryParameters), $fetch);
+    }
+    /**
+     * Handles a raw inbound webhook for the application.
+     *
+     * @param string $appId The app's ID or UID
+     * @param string $inboundToken 
+     * @param string $requestBody 
+     * @param array $queryParameters {
+     *     @var string $event_type The event type's name
+     * }
+     * @param array $headerParameters {
+     *     @var string $idempotency-key The request's idempotency key
+     * }
+     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+     * @throws \Svix\Internal\Exception\V1InboundMsgBadRequestException
+     * @throws \Svix\Internal\Exception\V1InboundMsgUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1InboundMsgForbiddenException
+     * @throws \Svix\Internal\Exception\V1InboundMsgNotFoundException
+     * @throws \Svix\Internal\Exception\V1InboundMsgConflictException
+     * @throws \Svix\Internal\Exception\V1InboundMsgUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1InboundMsgTooManyRequestsException
+     *
+     * @return null|\Svix\Internal\Model\MessageOut|\Psr\Http\Message\ResponseInterface
+     */
+    public function v1InboundMsg(string $appId, string $inboundToken, string $requestBody, array $queryParameters = array(), array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1InboundMsg($appId, $inboundToken, $requestBody, $queryParameters, $headerParameters), $fetch);
+    }
+    /**
+    * Invalidates the previous inbound url (if one exists), producing a new inbound
+    URL for this app
+    *
+    * @param string $appId The app's ID or UID
+    * @param array $headerParameters {
+    *     @var string $idempotency-key The request's idempotency key
+    * }
+    * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+    * @throws \Svix\Internal\Exception\V1InboundRotateUrlBadRequestException
+    * @throws \Svix\Internal\Exception\V1InboundRotateUrlUnauthorizedException
+    * @throws \Svix\Internal\Exception\V1InboundRotateUrlForbiddenException
+    * @throws \Svix\Internal\Exception\V1InboundRotateUrlNotFoundException
+    * @throws \Svix\Internal\Exception\V1InboundRotateUrlConflictException
+    * @throws \Svix\Internal\Exception\V1InboundRotateUrlUnprocessableEntityException
+    * @throws \Svix\Internal\Exception\V1InboundRotateUrlTooManyRequestsException
+    *
+    * @return null|\Svix\Internal\Model\RotatedUrlOut|\Psr\Http\Message\ResponseInterface
+    */
+    public function v1InboundRotateUrl(string $appId, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1InboundRotateUrl($appId, $headerParameters), $fetch);
+    }
+    /**
      * List the application's integrations.
      *
      * @param string $appId The app's ID or UID
@@ -863,6 +939,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *     @var string $before Only include items created before a certain date
     *     @var string $after Only include items created after a certain date
     *     @var bool $with_content When `true` message payloads are included in the response
+    *     @var string $tag Filter messages matching the provided tag
     *     @var array $event_types Filter response based on the event type
     * }
     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
@@ -1355,9 +1432,24 @@ class Client extends \Svix\Internal\Runtime\Client\Client
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\GetBackgroundTask($taskId), $fetch);
     }
     /**
+     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+     * @throws \Svix\Internal\Exception\V1EnvironmentExportGetBadRequestException
+     * @throws \Svix\Internal\Exception\V1EnvironmentExportGetUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1EnvironmentExportGetForbiddenException
+     * @throws \Svix\Internal\Exception\V1EnvironmentExportGetNotFoundException
+     * @throws \Svix\Internal\Exception\V1EnvironmentExportGetConflictException
+     * @throws \Svix\Internal\Exception\V1EnvironmentExportGetUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1EnvironmentExportGetTooManyRequestsException
+     *
+     * @return null|\Svix\Internal\Model\EnvironmentOut|\Psr\Http\Message\ResponseInterface
+     */
+    public function v1EnvironmentExportGet(string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EnvironmentExportGet(), $fetch);
+    }
+    /**
      * Download a JSON file containing all org-settings and event types
      *
-     * @param \stdClass $requestBody 
      * @param array $headerParameters {
      *     @var string $idempotency-key The request's idempotency key
      * }
@@ -1372,9 +1464,9 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\EnvironmentOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EnvironmentExport(\stdClass $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EnvironmentExport(array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
     {
-        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EnvironmentExport($requestBody, $headerParameters), $fetch);
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EnvironmentExport($headerParameters), $fetch);
     }
     /**
     * Import a configuration into the active organization.
@@ -1623,6 +1715,45 @@ class Client extends \Svix\Internal\Runtime\Client\Client
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeUpdate($eventTypeName, $requestBody), $fetch);
     }
     /**
+     * Gets the retry schedule for messages using the given event type
+     *
+     * @param string $eventTypeName The event type's name
+     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+     * @throws \Svix\Internal\Exception\V1EventTypeGetRetryScheduleBadRequestException
+     * @throws \Svix\Internal\Exception\V1EventTypeGetRetryScheduleUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1EventTypeGetRetryScheduleForbiddenException
+     * @throws \Svix\Internal\Exception\V1EventTypeGetRetryScheduleNotFoundException
+     * @throws \Svix\Internal\Exception\V1EventTypeGetRetryScheduleConflictException
+     * @throws \Svix\Internal\Exception\V1EventTypeGetRetryScheduleUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1EventTypeGetRetryScheduleTooManyRequestsException
+     *
+     * @return null|\Svix\Internal\Model\RetryScheduleInOut|\Psr\Http\Message\ResponseInterface
+     */
+    public function v1EventTypeGetRetrySchedule(string $eventTypeName, string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeGetRetrySchedule($eventTypeName), $fetch);
+    }
+    /**
+     * Sets a retry schedule for all messages using the given event type
+     *
+     * @param string $eventTypeName The event type's name
+     * @param \Svix\Internal\Model\RetryScheduleInOut $requestBody 
+     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+     * @throws \Svix\Internal\Exception\V1EventTypeUpdateRetryScheduleBadRequestException
+     * @throws \Svix\Internal\Exception\V1EventTypeUpdateRetryScheduleUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1EventTypeUpdateRetryScheduleForbiddenException
+     * @throws \Svix\Internal\Exception\V1EventTypeUpdateRetryScheduleNotFoundException
+     * @throws \Svix\Internal\Exception\V1EventTypeUpdateRetryScheduleConflictException
+     * @throws \Svix\Internal\Exception\V1EventTypeUpdateRetryScheduleUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1EventTypeUpdateRetryScheduleTooManyRequestsException
+     *
+     * @return null|\Svix\Internal\Model\RetryScheduleInOut|\Psr\Http\Message\ResponseInterface
+     */
+    public function v1EventTypeUpdateRetrySchedule(string $eventTypeName, \Svix\Internal\Model\RetryScheduleInOut $requestBody, string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeUpdateRetrySchedule($eventTypeName, $requestBody), $fetch);
+    }
+    /**
      * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
      * @throws \Svix\Internal\Exception\V1HealthGetBadRequestException
      * @throws \Svix\Internal\Exception\V1HealthGetUnauthorizedException
@@ -1708,26 +1839,45 @@ class Client extends \Svix\Internal\Runtime\Client\Client
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1StatsEndpointAttempts($appId, $endpointId, $queryParameters), $fetch);
     }
     /**
-     * Creates a background task to calculate the message destinations for all applications in the environment.
-     *
-     * @param \Svix\Internal\Model\AppUsageStatsIn $requestBody 
-     * @param array $headerParameters {
-     *     @var string $idempotency-key The request's idempotency key
-     * }
-     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsBadRequestException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsUnauthorizedException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsForbiddenException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsNotFoundException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsConflictException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsUnprocessableEntityException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsTooManyRequestsException
-     *
-     * @return null|\Svix\Internal\Model\AppUsageStatsOut|\Psr\Http\Message\ResponseInterface
-     */
-    public function calculateAggregateAppStats(\Svix\Internal\Model\AppUsageStatsIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    * Creates a background task to calculate the message destinations for all applications in the environment.
+    
+    Note that this endpoint is asynchronous. You will need to poll the `Get Background Task` endpoint to
+    retrieve the results of the operation.
+    *
+    * @param \Svix\Internal\Model\AppUsageStatsIn $requestBody 
+    * @param array $headerParameters {
+    *     @var string $idempotency-key The request's idempotency key
+    * }
+    * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+    * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsBadRequestException
+    * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsUnauthorizedException
+    * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsForbiddenException
+    * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsNotFoundException
+    * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsConflictException
+    * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsUnprocessableEntityException
+    * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsTooManyRequestsException
+    *
+    * @return null|\Svix\Internal\Model\AppUsageStatsOut|\Psr\Http\Message\ResponseInterface
+    */
+    public function v1StatisticsAggregateAppStats(\Svix\Internal\Model\AppUsageStatsIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
     {
-        return $this->executeEndpoint(new \Svix\Internal\Endpoint\CalculateAggregateAppStats($requestBody, $headerParameters), $fetch);
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1StatisticsAggregateAppStats($requestBody, $headerParameters), $fetch);
+    }
+    /**
+     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateEventTypesBadRequestException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateEventTypesUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateEventTypesForbiddenException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateEventTypesNotFoundException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateEventTypesConflictException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateEventTypesUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateEventTypesTooManyRequestsException
+     *
+     * @return null|\Svix\Internal\Model\AggregateEventTypesOut|\Psr\Http\Message\ResponseInterface
+     */
+    public function v1StatisticsAggregateEventTypes(string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1StatisticsAggregateEventTypes(), $fetch);
     }
     /**
      * List all transformation templates for an application
@@ -1773,6 +1923,28 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     public function v1TransformationTemplateCreate(\Svix\Internal\Model\TemplateIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateCreate($requestBody, $headerParameters), $fetch);
+    }
+    /**
+     * Use OpenAI's Completion API to generate code for a transformation template
+     *
+     * @param \Svix\Internal\Model\GenerateIn $requestBody 
+     * @param array $headerParameters {
+     *     @var string $idempotency-key The request's idempotency key
+     * }
+     * @param string $fetch Fetch mode to use (can be OBJECT or RESPONSE)
+     * @throws \Svix\Internal\Exception\V1TransformationTemplateGenerateBadRequestException
+     * @throws \Svix\Internal\Exception\V1TransformationTemplateGenerateUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1TransformationTemplateGenerateForbiddenException
+     * @throws \Svix\Internal\Exception\V1TransformationTemplateGenerateNotFoundException
+     * @throws \Svix\Internal\Exception\V1TransformationTemplateGenerateConflictException
+     * @throws \Svix\Internal\Exception\V1TransformationTemplateGenerateUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1TransformationTemplateGenerateTooManyRequestsException
+     *
+     * @return null|\Svix\Internal\Model\GenerateOut|\Psr\Http\Message\ResponseInterface
+     */
+    public function v1TransformationTemplateGenerate(\Svix\Internal\Model\GenerateIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    {
+        return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateGenerate($requestBody, $headerParameters), $fetch);
     }
     /**
      * Get Discord Incoming webhook URL

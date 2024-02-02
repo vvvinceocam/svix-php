@@ -2,7 +2,7 @@
 
 namespace Svix\Internal\Exception;
 
-class CalculateAggregateAppStatsUnprocessableEntityException extends UnprocessableEntityException
+class V1EventTypeUpdateRetryScheduleUnprocessableEntityException extends UnprocessableEntityException
 {
     /**
      * @var \Svix\Internal\Model\HTTPValidationError

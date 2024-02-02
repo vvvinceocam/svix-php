@@ -35,17 +35,15 @@ readonly class Endpoints extends EndpointsGroup
      * List the application's endpoints.
      *
      * @param string $appID The app's ID or UID
-     * @param array $options Ordering, filtering, and pagination options
+     * @param array{
+     *     limit: int,
+     *     iterator: ?string,
+     *     order: ?string,
+     * } $options Ordering, filtering, and pagination options
+     *
      * @return ListResponseEndpointOut
      */
-    public function list(
-        string    $appID,
-        #[ArrayShape([
-            'limit' => 'int',
-            'iterator' => '?string',
-            'order' => '?string',
-        ])] array $options,
-    ): ListResponseEndpointOut
+    public function list(string $appID, array $options): ListResponseEndpointOut
     {
         return $this->client->v1EndpointList($appID, $options);
     }

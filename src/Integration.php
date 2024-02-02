@@ -20,18 +20,15 @@ readonly class Integration extends EndpointsGroup
      * List the application's integrations.
      *
      * @param string $appID The app's ID or UID
-     * @param array $options
+     * @param array{
+     *     limit: ?int,
+     *     iterator: ?string,
+     * } $options
      * @return ListResponseIntegrationOut
      */
-    public function list(
-        string $appID,
-        #[ArrayShape([
-            'limit' => '?int',
-            'iterator' => '?string',
-        ])] array $options,
-    ): ListResponseIntegrationOut
+    public function list(string $appID, array $options): ListResponseIntegrationOut
     {
-        $this->client->v1IntegrationList(
+        return $this->client->v1IntegrationList(
             $appID,
             queryParameters: $options,
         );
@@ -75,8 +72,8 @@ readonly class Integration extends EndpointsGroup
      * @return IntegrationOut
      */
     public function update(
-        string $appID,
-        string $integrationID,
+        string            $appID,
+        string            $integrationID,
         IntegrationUpdate $integration,
     ): IntegrationOut
     {

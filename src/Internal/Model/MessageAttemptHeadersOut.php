@@ -15,6 +15,12 @@ class MessageAttemptHeadersOut extends \ArrayObject
     /**
      * 
      *
+     * @var string[][]|null
+     */
+    protected $responseHeaders;
+    /**
+     * 
+     *
      * @var string[]
      */
     protected $sensitive;
@@ -24,6 +30,28 @@ class MessageAttemptHeadersOut extends \ArrayObject
      * @var array<string, string>
      */
     protected $sentHeaders;
+    /**
+     * 
+     *
+     * @return string[][]|null
+     */
+    public function getResponseHeaders() : ?array
+    {
+        return $this->responseHeaders;
+    }
+    /**
+     * 
+     *
+     * @param string[][]|null $responseHeaders
+     *
+     * @return self
+     */
+    public function setResponseHeaders(?array $responseHeaders) : self
+    {
+        $this->initialized['responseHeaders'] = true;
+        $this->responseHeaders = $responseHeaders;
+        return $this;
+    }
     /**
      * 
      *

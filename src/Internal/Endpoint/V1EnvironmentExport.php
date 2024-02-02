@@ -7,14 +7,12 @@ class V1EnvironmentExport extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     /**
      * Download a JSON file containing all org-settings and event types
      *
-     * @param \stdClass $requestBody 
      * @param array $headerParameters {
      *     @var string $idempotency-key The request's idempotency key
      * }
      */
-    public function __construct(\stdClass $requestBody, array $headerParameters = array())
+    public function __construct(array $headerParameters = array())
     {
-        $this->body = $requestBody;
         $this->headerParameters = $headerParameters;
     }
     use \Svix\Internal\Runtime\Client\EndpointTrait;
@@ -28,9 +26,6 @@ class V1EnvironmentExport extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        if ($this->body instanceof \stdClass) {
-            return array(array('Content-Type' => array('application/json')), json_encode($this->body));
-        }
         return array(array(), null);
     }
     public function getExtraHeaders() : array

@@ -49,6 +49,10 @@ class MessageAttemptOutNormalizer implements DenormalizerInterface, NormalizerIn
             $object->setId($data['id']);
             unset($data['id']);
         }
+        if (\array_key_exists('msg', $data)) {
+            $object->setMsg($this->denormalizer->denormalize($data['msg'], 'Svix\\Internal\\Model\\MessageOut', 'json', $context));
+            unset($data['msg']);
+        }
         if (\array_key_exists('msgId', $data)) {
             $object->setMsgId($data['msgId']);
             unset($data['msgId']);
@@ -92,6 +96,9 @@ class MessageAttemptOutNormalizer implements DenormalizerInterface, NormalizerIn
         $data = array();
         $data['endpointId'] = $object->getEndpointId();
         $data['id'] = $object->getId();
+        if ($object->isInitialized('msg') && null !== $object->getMsg()) {
+            $data['msg'] = $this->normalizer->normalize($object->getMsg(), 'json', $context);
+        }
         $data['msgId'] = $object->getMsgId();
         $data['response'] = $object->getResponse();
         $data['responseStatusCode'] = $object->getResponseStatusCode();

@@ -33,7 +33,7 @@ class SettingsIn extends \ArrayObject
     /**
      * 
      *
-     * @var string|null
+     * @var string
      */
     protected $customColor;
     /**
@@ -42,6 +42,12 @@ class SettingsIn extends \ArrayObject
      * @var string|null
      */
     protected $customFontFamily;
+    /**
+     * 
+     *
+     * @var string|null
+     */
+    protected $customFontFamilyUrl;
     /**
      * 
      *
@@ -171,20 +177,20 @@ class SettingsIn extends \ArrayObject
     /**
      * 
      *
-     * @return string|null
+     * @return string
      */
-    public function getCustomColor() : ?string
+    public function getCustomColor() : string
     {
         return $this->customColor;
     }
     /**
      * 
      *
-     * @param string|null $customColor
+     * @param string $customColor
      *
      * @return self
      */
-    public function setCustomColor(?string $customColor) : self
+    public function setCustomColor(string $customColor) : self
     {
         $this->initialized['customColor'] = true;
         $this->customColor = $customColor;
@@ -210,6 +216,28 @@ class SettingsIn extends \ArrayObject
     {
         $this->initialized['customFontFamily'] = true;
         $this->customFontFamily = $customFontFamily;
+        return $this;
+    }
+    /**
+     * 
+     *
+     * @return string|null
+     */
+    public function getCustomFontFamilyUrl() : ?string
+    {
+        return $this->customFontFamilyUrl;
+    }
+    /**
+     * 
+     *
+     * @param string|null $customFontFamilyUrl
+     *
+     * @return self
+     */
+    public function setCustomFontFamilyUrl(?string $customFontFamilyUrl) : self
+    {
+        $this->initialized['customFontFamilyUrl'] = true;
+        $this->customFontFamilyUrl = $customFontFamilyUrl;
         return $this;
     }
     /**

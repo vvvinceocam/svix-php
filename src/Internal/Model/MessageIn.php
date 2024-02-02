@@ -49,6 +49,18 @@ class MessageIn extends \ArrayObject
      */
     protected $payloadRetentionPeriod = 90;
     /**
+     * List of free-form tags that can be filtered by when listing messages
+     *
+     * @var string[]|null
+     */
+    protected $tags;
+    /**
+     * Extra parameters to pass to Transformations (for future use)
+     *
+     * @var array<string, mixed>|null
+     */
+    protected $transformationsParams;
+    /**
      * 
      *
      * @return ApplicationIn
@@ -178,6 +190,50 @@ class MessageIn extends \ArrayObject
     {
         $this->initialized['payloadRetentionPeriod'] = true;
         $this->payloadRetentionPeriod = $payloadRetentionPeriod;
+        return $this;
+    }
+    /**
+     * List of free-form tags that can be filtered by when listing messages
+     *
+     * @return string[]|null
+     */
+    public function getTags() : ?array
+    {
+        return $this->tags;
+    }
+    /**
+     * List of free-form tags that can be filtered by when listing messages
+     *
+     * @param string[]|null $tags
+     *
+     * @return self
+     */
+    public function setTags(?array $tags) : self
+    {
+        $this->initialized['tags'] = true;
+        $this->tags = $tags;
+        return $this;
+    }
+    /**
+     * Extra parameters to pass to Transformations (for future use)
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getTransformationsParams() : ?iterable
+    {
+        return $this->transformationsParams;
+    }
+    /**
+     * Extra parameters to pass to Transformations (for future use)
+     *
+     * @param array<string, mixed>|null $transformationsParams
+     *
+     * @return self
+     */
+    public function setTransformationsParams(?iterable $transformationsParams) : self
+    {
+        $this->initialized['transformationsParams'] = true;
+        $this->transformationsParams = $transformationsParams;
         return $this;
     }
 }

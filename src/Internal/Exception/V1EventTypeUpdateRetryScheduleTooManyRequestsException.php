@@ -2,7 +2,7 @@
 
 namespace Svix\Internal\Exception;
 
-class CalculateAggregateAppStatsNotFoundException extends NotFoundException
+class V1EventTypeUpdateRetryScheduleTooManyRequestsException extends TooManyRequestsException
 {
     /**
      * @var \Svix\Internal\Model\HttpErrorOut
@@ -14,7 +14,7 @@ class CalculateAggregateAppStatsNotFoundException extends NotFoundException
     private $response;
     public function __construct(\Svix\Internal\Model\HttpErrorOut $httpErrorOut, \Psr\Http\Message\ResponseInterface $response)
     {
-        parent::__construct('Not Found');
+        parent::__construct('Too Many Requests');
         $this->httpErrorOut = $httpErrorOut;
         $this->response = $response;
     }

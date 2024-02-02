@@ -26,6 +26,7 @@ class V1MessageAttemptListByEndpoint extends \Svix\Internal\Runtime\Client\BaseE
     *     @var string $before Only include items created before a certain date
     *     @var string $after Only include items created after a certain date
     *     @var bool $with_content When `true` attempt content is included in the response
+    *     @var bool $with_msg When `true`, the message information is included in the response
     *     @var array $event_types Filter response based on the event type
     * }
     */
@@ -55,9 +56,9 @@ class V1MessageAttemptListByEndpoint extends \Svix\Internal\Runtime\Client\BaseE
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator', 'status', 'status_code_class', 'channel', 'before', 'after', 'with_content', 'event_types'));
+        $optionsResolver->setDefined(array('limit', 'iterator', 'status', 'status_code_class', 'channel', 'before', 'after', 'with_content', 'with_msg', 'event_types'));
         $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array('with_content' => true));
+        $optionsResolver->setDefaults(array('with_content' => true, 'with_msg' => false));
         $optionsResolver->addAllowedTypes('limit', array('int'));
         $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
         $optionsResolver->addAllowedTypes('status', array('int'));
@@ -67,6 +68,8 @@ class V1MessageAttemptListByEndpoint extends \Svix\Internal\Runtime\Client\BaseE
         $optionsResolver->addAllowedTypes('after', array('string', 'null'));
         $optionsResolver->addAllowedTypes('with_content', array('bool'));
         $optionsResolver->setNormalizer('with_content', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
+        $optionsResolver->addAllowedTypes('with_msg', array('bool'));
+        $optionsResolver->setNormalizer('with_msg', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
         $optionsResolver->addAllowedTypes('event_types', array('array', 'null'));
         return $optionsResolver;
     }

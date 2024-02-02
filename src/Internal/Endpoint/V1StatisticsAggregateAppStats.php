@@ -2,16 +2,19 @@
 
 namespace Svix\Internal\Endpoint;
 
-class CalculateAggregateAppStats extends \Svix\Internal\Runtime\Client\BaseEndpoint implements \Svix\Internal\Runtime\Client\Endpoint
+class V1StatisticsAggregateAppStats extends \Svix\Internal\Runtime\Client\BaseEndpoint implements \Svix\Internal\Runtime\Client\Endpoint
 {
     /**
-     * Creates a background task to calculate the message destinations for all applications in the environment.
-     *
-     * @param \Svix\Internal\Model\AppUsageStatsIn $requestBody 
-     * @param array $headerParameters {
-     *     @var string $idempotency-key The request's idempotency key
-     * }
-     */
+    * Creates a background task to calculate the message destinations for all applications in the environment.
+    
+    Note that this endpoint is asynchronous. You will need to poll the `Get Background Task` endpoint to
+    retrieve the results of the operation.
+    *
+    * @param \Svix\Internal\Model\AppUsageStatsIn $requestBody 
+    * @param array $headerParameters {
+    *     @var string $idempotency-key The request's idempotency key
+    * }
+    */
     public function __construct(\Svix\Internal\Model\AppUsageStatsIn $requestBody, array $headerParameters = array())
     {
         $this->body = $requestBody;
@@ -49,13 +52,13 @@ class CalculateAggregateAppStats extends \Svix\Internal\Runtime\Client\BaseEndpo
     /**
      * {@inheritdoc}
      *
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsBadRequestException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsUnauthorizedException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsForbiddenException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsNotFoundException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsConflictException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsUnprocessableEntityException
-     * @throws \Svix\Internal\Exception\CalculateAggregateAppStatsTooManyRequestsException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsBadRequestException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsUnauthorizedException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsForbiddenException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsNotFoundException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsConflictException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsUnprocessableEntityException
+     * @throws \Svix\Internal\Exception\V1StatisticsAggregateAppStatsTooManyRequestsException
      *
      * @return null|\Svix\Internal\Model\AppUsageStatsOut
      */
@@ -67,25 +70,25 @@ class CalculateAggregateAppStats extends \Svix\Internal\Runtime\Client\BaseEndpo
             return $serializer->deserialize($body, 'Svix\\Internal\\Model\\AppUsageStatsOut', 'json');
         }
         if (is_null($contentType) === false && (400 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            throw new \Svix\Internal\Exception\CalculateAggregateAppStatsBadRequestException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
+            throw new \Svix\Internal\Exception\V1StatisticsAggregateAppStatsBadRequestException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
         }
         if (is_null($contentType) === false && (401 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            throw new \Svix\Internal\Exception\CalculateAggregateAppStatsUnauthorizedException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
+            throw new \Svix\Internal\Exception\V1StatisticsAggregateAppStatsUnauthorizedException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
         }
         if (is_null($contentType) === false && (403 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            throw new \Svix\Internal\Exception\CalculateAggregateAppStatsForbiddenException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
+            throw new \Svix\Internal\Exception\V1StatisticsAggregateAppStatsForbiddenException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
         }
         if (is_null($contentType) === false && (404 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            throw new \Svix\Internal\Exception\CalculateAggregateAppStatsNotFoundException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
+            throw new \Svix\Internal\Exception\V1StatisticsAggregateAppStatsNotFoundException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
         }
         if (is_null($contentType) === false && (409 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            throw new \Svix\Internal\Exception\CalculateAggregateAppStatsConflictException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
+            throw new \Svix\Internal\Exception\V1StatisticsAggregateAppStatsConflictException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
         }
         if (is_null($contentType) === false && (422 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            throw new \Svix\Internal\Exception\CalculateAggregateAppStatsUnprocessableEntityException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HTTPValidationError', 'json'), $response);
+            throw new \Svix\Internal\Exception\V1StatisticsAggregateAppStatsUnprocessableEntityException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HTTPValidationError', 'json'), $response);
         }
         if (is_null($contentType) === false && (429 === $status && mb_strpos($contentType, 'application/json') !== false)) {
-            throw new \Svix\Internal\Exception\CalculateAggregateAppStatsTooManyRequestsException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
+            throw new \Svix\Internal\Exception\V1StatisticsAggregateAppStatsTooManyRequestsException($serializer->deserialize($body, 'Svix\\Internal\\Model\\HttpErrorOut', 'json'), $response);
         }
     }
     public function getAuthenticationScopes() : array

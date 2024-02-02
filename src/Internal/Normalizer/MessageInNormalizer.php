@@ -79,9 +79,31 @@ class MessageInNormalizer implements DenormalizerInterface, NormalizerInterface,
             $object->setPayloadRetentionPeriod($data['payloadRetentionPeriod']);
             unset($data['payloadRetentionPeriod']);
         }
-        foreach ($data as $key_1 => $value_2) {
-            if (preg_match('/.*/', (string) $key_1)) {
-                $object[$key_1] = $value_2;
+        if (\array_key_exists('tags', $data) && $data['tags'] !== null) {
+            $values_2 = array();
+            foreach ($data['tags'] as $value_2) {
+                $values_2[] = $value_2;
+            }
+            $object->setTags($values_2);
+            unset($data['tags']);
+        }
+        elseif (\array_key_exists('tags', $data) && $data['tags'] === null) {
+            $object->setTags(null);
+        }
+        if (\array_key_exists('transformationsParams', $data) && $data['transformationsParams'] !== null) {
+            $values_3 = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
+            foreach ($data['transformationsParams'] as $key_1 => $value_3) {
+                $values_3[$key_1] = $value_3;
+            }
+            $object->setTransformationsParams($values_3);
+            unset($data['transformationsParams']);
+        }
+        elseif (\array_key_exists('transformationsParams', $data) && $data['transformationsParams'] === null) {
+            $object->setTransformationsParams(null);
+        }
+        foreach ($data as $key_2 => $value_4) {
+            if (preg_match('/.*/', (string) $key_2)) {
+                $object[$key_2] = $value_4;
             }
         }
         return $object;
@@ -114,9 +136,23 @@ class MessageInNormalizer implements DenormalizerInterface, NormalizerInterface,
         if ($object->isInitialized('payloadRetentionPeriod') && null !== $object->getPayloadRetentionPeriod()) {
             $data['payloadRetentionPeriod'] = $object->getPayloadRetentionPeriod();
         }
-        foreach ($object as $key_1 => $value_2) {
-            if (preg_match('/.*/', (string) $key_1)) {
-                $data[$key_1] = $value_2;
+        if ($object->isInitialized('tags') && null !== $object->getTags()) {
+            $values_2 = array();
+            foreach ($object->getTags() as $value_2) {
+                $values_2[] = $value_2;
+            }
+            $data['tags'] = $values_2;
+        }
+        if ($object->isInitialized('transformationsParams') && null !== $object->getTransformationsParams()) {
+            $values_3 = array();
+            foreach ($object->getTransformationsParams() as $key_1 => $value_3) {
+                $values_3[$key_1] = $value_3;
+            }
+            $data['transformationsParams'] = $values_3;
+        }
+        foreach ($object as $key_2 => $value_4) {
+            if (preg_match('/.*/', (string) $key_2)) {
+                $data[$key_2] = $value_4;
             }
         }
         return $data;

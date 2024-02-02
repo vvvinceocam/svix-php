@@ -25,6 +25,7 @@ class V1MessageList extends \Svix\Internal\Runtime\Client\BaseEndpoint implement
     *     @var string $before Only include items created before a certain date
     *     @var string $after Only include items created after a certain date
     *     @var bool $with_content When `true` message payloads are included in the response
+    *     @var string $tag Filter messages matching the provided tag
     *     @var array $event_types Filter response based on the event type
     * }
     */
@@ -53,7 +54,7 @@ class V1MessageList extends \Svix\Internal\Runtime\Client\BaseEndpoint implement
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator', 'channel', 'before', 'after', 'with_content', 'event_types'));
+        $optionsResolver->setDefined(array('limit', 'iterator', 'channel', 'before', 'after', 'with_content', 'tag', 'event_types'));
         $optionsResolver->setRequired(array());
         $optionsResolver->setDefaults(array('with_content' => true));
         $optionsResolver->addAllowedTypes('limit', array('int'));
@@ -63,6 +64,7 @@ class V1MessageList extends \Svix\Internal\Runtime\Client\BaseEndpoint implement
         $optionsResolver->addAllowedTypes('after', array('string', 'null'));
         $optionsResolver->addAllowedTypes('with_content', array('bool'));
         $optionsResolver->setNormalizer('with_content', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
+        $optionsResolver->addAllowedTypes('tag', array('string', 'null'));
         $optionsResolver->addAllowedTypes('event_types', array('array', 'null'));
         return $optionsResolver;
     }

@@ -2,7 +2,7 @@
 
 namespace Svix\Internal\Exception;
 
-class CalculateAggregateAppStatsTooManyRequestsException extends TooManyRequestsException
+class V1InboundRotateUrlForbiddenException extends ForbiddenException
 {
     /**
      * @var \Svix\Internal\Model\HttpErrorOut
@@ -14,7 +14,7 @@ class CalculateAggregateAppStatsTooManyRequestsException extends TooManyRequests
     private $response;
     public function __construct(\Svix\Internal\Model\HttpErrorOut $httpErrorOut, \Psr\Http\Message\ResponseInterface $response)
     {
-        parent::__construct('Too Many Requests');
+        parent::__construct('Forbidden');
         $this->httpErrorOut = $httpErrorOut;
         $this->response = $response;
     }

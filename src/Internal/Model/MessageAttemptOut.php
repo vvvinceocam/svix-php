@@ -25,6 +25,12 @@ class MessageAttemptOut extends \ArrayObject
      */
     protected $id;
     /**
+     * 
+     *
+     * @var MessageOut
+     */
+    protected $msg;
+    /**
      * The msg's ID
      *
      * @var string
@@ -114,6 +120,28 @@ class MessageAttemptOut extends \ArrayObject
     {
         $this->initialized['id'] = true;
         $this->id = $id;
+        return $this;
+    }
+    /**
+     * 
+     *
+     * @return MessageOut
+     */
+    public function getMsg() : MessageOut
+    {
+        return $this->msg;
+    }
+    /**
+     * 
+     *
+     * @param MessageOut $msg
+     *
+     * @return self
+     */
+    public function setMsg(MessageOut $msg) : self
+    {
+        $this->initialized['msg'] = true;
+        $this->msg = $msg;
         return $this;
     }
     /**
