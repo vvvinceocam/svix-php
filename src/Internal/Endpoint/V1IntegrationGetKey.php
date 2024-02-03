@@ -24,15 +24,15 @@ class V1IntegrationGetKey extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{integ_id}'), array($this->app_id, $this->integ_id), '/api/v1/app/{app_id}/integration/{integ_id}/key/');
+        return str_replace(['{app_id}', '{integ_id}'], [$this->app_id, $this->integ_id], '/api/v1/app/{app_id}/integration/{integ_id}/key/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     /**
      * {@inheritdoc}
@@ -78,6 +78,6 @@ class V1IntegrationGetKey extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

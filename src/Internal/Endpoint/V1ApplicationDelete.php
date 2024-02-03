@@ -21,15 +21,15 @@ class V1ApplicationDelete extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}'), array($this->app_id), '/api/v1/app/{app_id}/');
+        return str_replace(['{app_id}'], [$this->app_id], '/api/v1/app/{app_id}/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     /**
      * {@inheritdoc}
@@ -75,6 +75,6 @@ class V1ApplicationDelete extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

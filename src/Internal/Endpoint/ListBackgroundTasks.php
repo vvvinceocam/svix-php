@@ -15,7 +15,7 @@ class ListBackgroundTasks extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
      *     @var string $order The sorting order of the returned items
      * }
      */
-    public function __construct(array $queryParameters = array())
+    public function __construct(array $queryParameters = [])
     {
         $this->queryParameters = $queryParameters;
     }
@@ -30,23 +30,23 @@ class ListBackgroundTasks extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('status', 'task', 'limit', 'iterator', 'order'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('status', array('string'));
-        $optionsResolver->addAllowedTypes('task', array('string'));
-        $optionsResolver->addAllowedTypes('limit', array('int'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('order', array('string'));
+        $optionsResolver->setDefined(['status', 'task', 'limit', 'iterator', 'order']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('status', ['string']);
+        $optionsResolver->addAllowedTypes('task', ['string']);
+        $optionsResolver->addAllowedTypes('limit', ['int']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('order', ['string']);
         return $optionsResolver;
     }
     /**
@@ -93,6 +93,6 @@ class ListBackgroundTasks extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

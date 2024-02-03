@@ -23,18 +23,18 @@ class V1EventTypeUpdate extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getUri() : string
     {
-        return str_replace(array('{event_type_name}'), array($this->event_type_name), '/api/v1/event-type/{event_type_name}/');
+        return str_replace(['{event_type_name}'], [$this->event_type_name], '/api/v1/event-type/{event_type_name}/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if ($this->body instanceof \Svix\Internal\Model\EventTypeUpdate) {
-            return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
+            return [['Content-Type' => ['application/json']], $serializer->serialize($this->body, 'json')];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     /**
      * {@inheritdoc}
@@ -83,6 +83,6 @@ class V1EventTypeUpdate extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

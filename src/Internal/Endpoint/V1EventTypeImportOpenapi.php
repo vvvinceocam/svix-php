@@ -16,7 +16,7 @@ class V1EventTypeImportOpenapi extends \Svix\Internal\Runtime\Client\BaseEndpoin
     *     @var string $idempotency-key The request's idempotency key
     * }
     */
-    public function __construct(\Svix\Internal\Model\EventTypeImportOpenApiIn $requestBody, array $headerParameters = array())
+    public function __construct(\Svix\Internal\Model\EventTypeImportOpenApiIn $requestBody, array $headerParameters = [])
     {
         $this->body = $requestBody;
         $this->headerParameters = $headerParameters;
@@ -33,21 +33,21 @@ class V1EventTypeImportOpenapi extends \Svix\Internal\Runtime\Client\BaseEndpoin
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if ($this->body instanceof \Svix\Internal\Model\EventTypeImportOpenApiIn) {
-            return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
+            return [['Content-Type' => ['application/json']], $serializer->serialize($this->body, 'json')];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
-        $optionsResolver->setDefined(array('idempotency-key'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('idempotency-key', array('string'));
+        $optionsResolver->setDefined(['idempotency-key']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('idempotency-key', ['string']);
         return $optionsResolver;
     }
     /**
@@ -94,6 +94,6 @@ class V1EventTypeImportOpenapi extends \Svix\Internal\Runtime\Client\BaseEndpoin
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

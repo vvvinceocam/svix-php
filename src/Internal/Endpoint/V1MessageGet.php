@@ -15,7 +15,7 @@ class V1MessageGet extends \Svix\Internal\Runtime\Client\BaseEndpoint implements
      *     @var bool $with_content When `true` message payloads are included in the response
      * }
      */
-    public function __construct(string $appId, string $msgId, array $queryParameters = array())
+    public function __construct(string $appId, string $msgId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->msg_id = $msgId;
@@ -28,24 +28,24 @@ class V1MessageGet extends \Svix\Internal\Runtime\Client\BaseEndpoint implements
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{msg_id}'), array($this->app_id, $this->msg_id), '/api/v1/app/{app_id}/msg/{msg_id}/');
+        return str_replace(['{app_id}', '{msg_id}'], [$this->app_id, $this->msg_id], '/api/v1/app/{app_id}/msg/{msg_id}/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('with_content'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array('with_content' => true));
-        $optionsResolver->addAllowedTypes('with_content', array('bool'));
-        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
+        $optionsResolver->setDefined(['with_content']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults(['with_content' => true]);
+        $optionsResolver->addAllowedTypes('with_content', ['bool']);
+        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable([new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke']));
         return $optionsResolver;
     }
     /**
@@ -92,6 +92,6 @@ class V1MessageGet extends \Svix\Internal\Runtime\Client\BaseEndpoint implements
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

@@ -14,7 +14,7 @@ class V1ApplicationGetStats extends \Svix\Internal\Runtime\Client\BaseEndpoint i
      *     @var string $until Filter the range to data ending by this date
      * }
      */
-    public function __construct(string $appId, array $queryParameters = array())
+    public function __construct(string $appId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->queryParameters = $queryParameters;
@@ -26,24 +26,24 @@ class V1ApplicationGetStats extends \Svix\Internal\Runtime\Client\BaseEndpoint i
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}'), array($this->app_id), '/api/v1/app/{app_id}/stats/');
+        return str_replace(['{app_id}'], [$this->app_id], '/api/v1/app/{app_id}/stats/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('since', 'until'));
-        $optionsResolver->setRequired(array('since', 'until'));
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('since', array('string'));
-        $optionsResolver->addAllowedTypes('until', array('string'));
+        $optionsResolver->setDefined(['since', 'until']);
+        $optionsResolver->setRequired(['since', 'until']);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('since', ['string']);
+        $optionsResolver->addAllowedTypes('until', ['string']);
         return $optionsResolver;
     }
     /**
@@ -90,6 +90,6 @@ class V1ApplicationGetStats extends \Svix\Internal\Runtime\Client\BaseEndpoint i
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

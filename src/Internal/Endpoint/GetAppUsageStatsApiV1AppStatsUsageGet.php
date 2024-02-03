@@ -14,7 +14,7 @@ class GetAppUsageStatsApiV1AppStatsUsageGet extends \Svix\Internal\Runtime\Clien
      *     @var string $iterator The iterator to use (depends on the chosen ordering)
      * }
      */
-    public function __construct(array $queryParameters = array())
+    public function __construct(array $queryParameters = [])
     {
         $this->queryParameters = $queryParameters;
     }
@@ -29,22 +29,22 @@ class GetAppUsageStatsApiV1AppStatsUsageGet extends \Svix\Internal\Runtime\Clien
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('since', 'until', 'limit', 'iterator'));
-        $optionsResolver->setRequired(array('since', 'until'));
-        $optionsResolver->setDefaults(array('limit' => 50));
-        $optionsResolver->addAllowedTypes('since', array('string'));
-        $optionsResolver->addAllowedTypes('until', array('string'));
-        $optionsResolver->addAllowedTypes('limit', array('int', 'null'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
+        $optionsResolver->setDefined(['since', 'until', 'limit', 'iterator']);
+        $optionsResolver->setRequired(['since', 'until']);
+        $optionsResolver->setDefaults(['limit' => 50]);
+        $optionsResolver->addAllowedTypes('since', ['string']);
+        $optionsResolver->addAllowedTypes('until', ['string']);
+        $optionsResolver->addAllowedTypes('limit', ['int', 'null']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
         return $optionsResolver;
     }
     /**
@@ -91,6 +91,6 @@ class GetAppUsageStatsApiV1AppStatsUsageGet extends \Svix\Internal\Runtime\Clien
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

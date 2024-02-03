@@ -23,7 +23,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ListResponseApplicationOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1ApplicationList(array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1ApplicationList(array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1ApplicationList($queryParameters), $fetch);
     }
@@ -48,7 +48,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ApplicationOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1ApplicationCreate(\Svix\Internal\Model\ApplicationIn $requestBody, array $queryParameters = array(), array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1ApplicationCreate(\Svix\Internal\Model\ApplicationIn $requestBody, array $queryParameters = [], array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1ApplicationCreate($requestBody, $queryParameters, $headerParameters), $fetch);
     }
@@ -72,7 +72,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ListResponseApplicationStats|\Psr\Http\Message\ResponseInterface
      */
-    public function getAppUsageStatsApiV1AppStatsUsageGet(array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function getAppUsageStatsApiV1AppStatsUsageGet(array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\GetAppUsageStatsApiV1AppStatsUsageGet($queryParameters), $fetch);
     }
@@ -188,7 +188,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ListResponseMessageAttemptOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageAttemptListByEndpoint(string $appId, string $endpointId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageAttemptListByEndpoint(string $appId, string $endpointId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageAttemptListByEndpoint($appId, $endpointId, $queryParameters), $fetch);
     }
@@ -226,7 +226,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ListResponseMessageAttemptOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageAttemptListByMsg(string $appId, string $msgId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageAttemptListByMsg(string $appId, string $msgId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageAttemptListByMsg($appId, $msgId, $queryParameters), $fetch);
     }
@@ -250,7 +250,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ListResponseEndpointOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EndpointList(string $appId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointList(string $appId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointList($appId, $queryParameters), $fetch);
     }
@@ -275,7 +275,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\EndpointOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1EndpointCreate(string $appId, \Svix\Internal\Model\EndpointIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointCreate(string $appId, \Svix\Internal\Model\EndpointIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointCreate($appId, $requestBody, $headerParameters), $fetch);
     }
@@ -457,7 +457,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ListResponseEndpointMessageOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageAttemptListAttemptedMessages(string $appId, string $endpointId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageAttemptListAttemptedMessages(string $appId, string $endpointId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageAttemptListAttemptedMessages($appId, $endpointId, $queryParameters), $fetch);
     }
@@ -482,7 +482,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\MessageAttemptOut|\Psr\Http\Message\ResponseInterface
     */
-    public function createMessageAttemptForEndpoint(string $appId, string $endpointId, \Svix\Internal\Model\MessageIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function createMessageAttemptForEndpoint(string $appId, string $endpointId, \Svix\Internal\Model\MessageIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\CreateMessageAttemptForEndpoint($appId, $endpointId, $requestBody, $headerParameters), $fetch);
     }
@@ -506,7 +506,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\RecoverOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EndpointRecover(string $appId, string $endpointId, \Svix\Internal\Model\RecoverIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointRecover(string $appId, string $endpointId, \Svix\Internal\Model\RecoverIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointRecover($appId, $endpointId, $requestBody, $headerParameters), $fetch);
     }
@@ -530,7 +530,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ReplayOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EndpointReplay(string $appId, string $endpointId, \Svix\Internal\Model\ReplayIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointReplay(string $appId, string $endpointId, \Svix\Internal\Model\ReplayIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointReplay($appId, $endpointId, $requestBody, $headerParameters), $fetch);
     }
@@ -577,7 +577,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EndpointRotateSecret(string $appId, string $endpointId, \Svix\Internal\Model\EndpointSecretRotateIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointRotateSecret(string $appId, string $endpointId, \Svix\Internal\Model\EndpointSecretRotateIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointRotateSecret($appId, $endpointId, $requestBody, $headerParameters), $fetch);
     }
@@ -601,7 +601,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\MessageOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EndpointSendExample(string $appId, string $endpointId, \Svix\Internal\Model\EventExampleIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointSendExample(string $appId, string $endpointId, \Svix\Internal\Model\EventExampleIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointSendExample($appId, $endpointId, $requestBody, $headerParameters), $fetch);
     }
@@ -625,7 +625,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\EndpointStats|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EndpointGetStats(string $appId, string $endpointId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointGetStats(string $appId, string $endpointId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointGetStats($appId, $endpointId, $queryParameters), $fetch);
     }
@@ -690,7 +690,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\EndpointTransformationSimulateOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EndpointTransformationSimulate(string $appId, string $endpointId, \Svix\Internal\Model\EndpointTransformationSimulateIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EndpointTransformationSimulate(string $appId, string $endpointId, \Svix\Internal\Model\EndpointTransformationSimulateIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EndpointTransformationSimulate($appId, $endpointId, $requestBody, $headerParameters), $fetch);
     }
@@ -715,7 +715,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\MessageStreamOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1MessageStream(string $appId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageStream(string $appId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageStream($appId, $queryParameters), $fetch);
     }
@@ -742,7 +742,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\MessageOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1InboundMsg(string $appId, string $inboundToken, string $requestBody, array $queryParameters = array(), array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1InboundMsg(string $appId, string $inboundToken, string $requestBody, array $queryParameters = [], array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1InboundMsg($appId, $inboundToken, $requestBody, $queryParameters, $headerParameters), $fetch);
     }
@@ -765,7 +765,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\RotatedUrlOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1InboundRotateUrl(string $appId, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1InboundRotateUrl(string $appId, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1InboundRotateUrl($appId, $headerParameters), $fetch);
     }
@@ -788,7 +788,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ListResponseIntegrationOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1IntegrationList(string $appId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1IntegrationList(string $appId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1IntegrationList($appId, $queryParameters), $fetch);
     }
@@ -811,7 +811,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\IntegrationOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1IntegrationCreate(string $appId, \Svix\Internal\Model\IntegrationIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1IntegrationCreate(string $appId, \Svix\Internal\Model\IntegrationIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1IntegrationCreate($appId, $requestBody, $headerParameters), $fetch);
     }
@@ -915,7 +915,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\IntegrationKeyOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1IntegrationRotateKey(string $appId, string $integId, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1IntegrationRotateKey(string $appId, string $integId, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1IntegrationRotateKey($appId, $integId, $headerParameters), $fetch);
     }
@@ -953,7 +953,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ListResponseMessageOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageList(string $appId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageList(string $appId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageList($appId, $queryParameters), $fetch);
     }
@@ -988,7 +988,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\MessageOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageCreate(string $appId, \Svix\Internal\Model\MessageIn $requestBody, array $queryParameters = array(), array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageCreate(string $appId, \Svix\Internal\Model\MessageIn $requestBody, array $queryParameters = [], array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageCreate($appId, $requestBody, $queryParameters, $headerParameters), $fetch);
     }
@@ -1011,7 +1011,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\MessageOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1MessageGet(string $appId, string $msgId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageGet(string $appId, string $msgId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageGet($appId, $msgId, $queryParameters), $fetch);
     }
@@ -1049,7 +1049,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ListResponseMessageAttemptOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageAttemptListByMsgDeprecated(string $appId, string $msgId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageAttemptListByMsgDeprecated(string $appId, string $msgId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageAttemptListByMsgDeprecated($appId, $msgId, $queryParameters), $fetch);
     }
@@ -1159,7 +1159,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ListResponseMessageEndpointOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageAttemptListAttemptedDestinations(string $appId, string $msgId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageAttemptListAttemptedDestinations(string $appId, string $msgId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageAttemptListAttemptedDestinations($appId, $msgId, $queryParameters), $fetch);
     }
@@ -1201,7 +1201,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ListResponseMessageAttemptEndpointOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1MessageAttemptListByEndpointDeprecated(string $appId, string $msgId, string $endpointId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageAttemptListByEndpointDeprecated(string $appId, string $msgId, string $endpointId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageAttemptListByEndpointDeprecated($appId, $msgId, $endpointId, $queryParameters), $fetch);
     }
@@ -1225,7 +1225,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Psr\Http\Message\ResponseInterface
      */
-    public function v1MessageAttemptResend(string $appId, string $msgId, string $endpointId, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1MessageAttemptResend(string $appId, string $msgId, string $endpointId, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1MessageAttemptResend($appId, $msgId, $endpointId, $headerParameters), $fetch);
     }
@@ -1268,7 +1268,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ApplicationStats|\Psr\Http\Message\ResponseInterface
      */
-    public function v1ApplicationGetStats(string $appId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1ApplicationGetStats(string $appId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1ApplicationGetStats($appId, $queryParameters), $fetch);
     }
@@ -1291,7 +1291,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\AppPortalAccessOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1AuthenticationAppPortalAccess(string $appId, \Svix\Internal\Model\AppPortalAccessIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1AuthenticationAppPortalAccess(string $appId, \Svix\Internal\Model\AppPortalAccessIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1AuthenticationAppPortalAccess($appId, $requestBody, $headerParameters), $fetch);
     }
@@ -1314,7 +1314,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Psr\Http\Message\ResponseInterface
      */
-    public function v1AuthenticationExpireAll(string $appId, \Svix\Internal\Model\ApplicationTokenExpireIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1AuthenticationExpireAll(string $appId, \Svix\Internal\Model\ApplicationTokenExpireIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1AuthenticationExpireAll($appId, $requestBody, $headerParameters), $fetch);
     }
@@ -1338,7 +1338,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\DashboardAccessOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1AuthenticationDashboardAccess(string $appId, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1AuthenticationDashboardAccess(string $appId, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1AuthenticationDashboardAccess($appId, $headerParameters), $fetch);
     }
@@ -1361,7 +1361,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Psr\Http\Message\ResponseInterface
     */
-    public function v1AuthenticationLogout(array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1AuthenticationLogout(array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1AuthenticationLogout($headerParameters), $fetch);
     }
@@ -1383,7 +1383,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\OneTimeTokenOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1AuthenticationExchangeOneTimeToken(\Svix\Internal\Model\OneTimeTokenIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1AuthenticationExchangeOneTimeToken(\Svix\Internal\Model\OneTimeTokenIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1AuthenticationExchangeOneTimeToken($requestBody, $headerParameters), $fetch);
     }
@@ -1408,7 +1408,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ListResponseBackgroundTaskOut|\Psr\Http\Message\ResponseInterface
      */
-    public function listBackgroundTasks(array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function listBackgroundTasks(array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\ListBackgroundTasks($queryParameters), $fetch);
     }
@@ -1464,7 +1464,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\EnvironmentOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EnvironmentExport(array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EnvironmentExport(array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EnvironmentExport($headerParameters), $fetch);
     }
@@ -1487,7 +1487,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Psr\Http\Message\ResponseInterface
     */
-    public function v1EnvironmentImport(\Svix\Internal\Model\EnvironmentIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EnvironmentImport(\Svix\Internal\Model\EnvironmentIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EnvironmentImport($requestBody, $headerParameters), $fetch);
     }
@@ -1528,7 +1528,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ListResponseEventTypeOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EventTypeList(array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EventTypeList(array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeList($queryParameters), $fetch);
     }
@@ -1554,7 +1554,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\EventTypeOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1EventTypeCreate(\Svix\Internal\Model\EventTypeIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EventTypeCreate(\Svix\Internal\Model\EventTypeIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeCreate($requestBody, $headerParameters), $fetch);
     }
@@ -1576,7 +1576,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\ExportEventTypeOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1EventTypeExportOpenapi(array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EventTypeExportOpenapi(array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeExportOpenapi($headerParameters), $fetch);
     }
@@ -1602,7 +1602,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\EventTypeImportOpenApiOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1EventTypeImportOpenapi(\Svix\Internal\Model\EventTypeImportOpenApiIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EventTypeImportOpenapi(\Svix\Internal\Model\EventTypeImportOpenApiIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeImportOpenapi($requestBody, $headerParameters), $fetch);
     }
@@ -1624,7 +1624,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\EventTypeExampleOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1EventTypeGenerateExample(\Svix\Internal\Model\EventTypeSchemaIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EventTypeGenerateExample(\Svix\Internal\Model\EventTypeSchemaIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeGenerateExample($requestBody, $headerParameters), $fetch);
     }
@@ -1651,7 +1651,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Psr\Http\Message\ResponseInterface
     */
-    public function v1EventTypeDelete(string $eventTypeName, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1EventTypeDelete(string $eventTypeName, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1EventTypeDelete($eventTypeName, $queryParameters), $fetch);
     }
@@ -1787,7 +1787,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\MessageBroadcastOut|\Psr\Http\Message\ResponseInterface
      */
-    public function createBroadcastMessage(\Svix\Internal\Model\MessageBroadcastIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function createBroadcastMessage(\Svix\Internal\Model\MessageBroadcastIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\CreateBroadcastMessage($requestBody, $headerParameters), $fetch);
     }
@@ -1810,7 +1810,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\AttemptStatisticsResponse|\Psr\Http\Message\ResponseInterface
      */
-    public function v1StatsAppAttempts(string $appId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1StatsAppAttempts(string $appId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1StatsAppAttempts($appId, $queryParameters), $fetch);
     }
@@ -1834,7 +1834,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\AttemptStatisticsResponse|\Psr\Http\Message\ResponseInterface
      */
-    public function v1StatsEndpointAttempts(string $appId, string $endpointId, array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1StatsEndpointAttempts(string $appId, string $endpointId, array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1StatsEndpointAttempts($appId, $endpointId, $queryParameters), $fetch);
     }
@@ -1859,7 +1859,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     *
     * @return null|\Svix\Internal\Model\AppUsageStatsOut|\Psr\Http\Message\ResponseInterface
     */
-    public function v1StatisticsAggregateAppStats(\Svix\Internal\Model\AppUsageStatsIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1StatisticsAggregateAppStats(\Svix\Internal\Model\AppUsageStatsIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1StatisticsAggregateAppStats($requestBody, $headerParameters), $fetch);
     }
@@ -1898,7 +1898,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\ListResponseTemplateOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1TransformationTemplateList(array $queryParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1TransformationTemplateList(array $queryParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateList($queryParameters), $fetch);
     }
@@ -1920,7 +1920,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\TemplateOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1TransformationTemplateCreate(\Svix\Internal\Model\TemplateIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1TransformationTemplateCreate(\Svix\Internal\Model\TemplateIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateCreate($requestBody, $headerParameters), $fetch);
     }
@@ -1942,7 +1942,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\GenerateOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1TransformationTemplateGenerate(\Svix\Internal\Model\GenerateIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1TransformationTemplateGenerate(\Svix\Internal\Model\GenerateIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateGenerate($requestBody, $headerParameters), $fetch);
     }
@@ -1964,7 +1964,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\OauthPayloadOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1TransformationTemplateOauthDiscord(\Svix\Internal\Model\OauthPayloadIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1TransformationTemplateOauthDiscord(\Svix\Internal\Model\OauthPayloadIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateOauthDiscord($requestBody, $headerParameters), $fetch);
     }
@@ -1986,7 +1986,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\OauthPayloadOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1TransformationTemplateOauthSlack(\Svix\Internal\Model\OauthPayloadIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1TransformationTemplateOauthSlack(\Svix\Internal\Model\OauthPayloadIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateOauthSlack($requestBody, $headerParameters), $fetch);
     }
@@ -2008,7 +2008,7 @@ class Client extends \Svix\Internal\Runtime\Client\Client
      *
      * @return null|\Svix\Internal\Model\TransformationSimulateOut|\Psr\Http\Message\ResponseInterface
      */
-    public function v1TransformationTemplateSimulate(\Svix\Internal\Model\TransformationSimulateIn $requestBody, array $headerParameters = array(), string $fetch = self::FETCH_OBJECT)
+    public function v1TransformationTemplateSimulate(\Svix\Internal\Model\TransformationSimulateIn $requestBody, array $headerParameters = [], string $fetch = self::FETCH_OBJECT)
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateSimulate($requestBody, $headerParameters), $fetch);
     }
@@ -2090,11 +2090,11 @@ class Client extends \Svix\Internal\Runtime\Client\Client
     {
         return $this->executeEndpoint(new \Svix\Internal\Endpoint\V1TransformationTemplateUpdate($transformationTemplateId, $requestBody), $fetch);
     }
-    public static function create($httpClient = null, array $additionalPlugins = array(), array $additionalNormalizers = array())
+    public static function create($httpClient = null, array $additionalPlugins = [], array $additionalNormalizers = [])
     {
         if (null === $httpClient) {
             $httpClient = \Http\Discovery\Psr18ClientDiscovery::find();
-            $plugins = array();
+            $plugins = [];
             $uri = \Http\Discovery\Psr17FactoryDiscovery::findUriFactory()->createUri('https://api.eu.svix.com/');
             $plugins[] = new \Http\Client\Common\Plugin\AddHostPlugin($uri);
             $plugins[] = new \Http\Client\Common\Plugin\AddPathPlugin($uri);
@@ -2105,11 +2105,11 @@ class Client extends \Svix\Internal\Runtime\Client\Client
         }
         $requestFactory = \Http\Discovery\Psr17FactoryDiscovery::findRequestFactory();
         $streamFactory = \Http\Discovery\Psr17FactoryDiscovery::findStreamFactory();
-        $normalizers = array(new \Symfony\Component\Serializer\Normalizer\ArrayDenormalizer(), new \Svix\Internal\Normalizer\JaneObjectNormalizer());
+        $normalizers = [new \Symfony\Component\Serializer\Normalizer\ArrayDenormalizer(), new \Svix\Internal\Normalizer\JaneObjectNormalizer()];
         if (count($additionalNormalizers) > 0) {
             $normalizers = array_merge($normalizers, $additionalNormalizers);
         }
-        $serializer = new \Symfony\Component\Serializer\Serializer($normalizers, array(new \Symfony\Component\Serializer\Encoder\JsonEncoder(new \Symfony\Component\Serializer\Encoder\JsonEncode(), new \Symfony\Component\Serializer\Encoder\JsonDecode(array('json_decode_associative' => true)))));
+        $serializer = new \Symfony\Component\Serializer\Serializer($normalizers, [new \Symfony\Component\Serializer\Encoder\JsonEncoder(new \Symfony\Component\Serializer\Encoder\JsonEncode(), new \Symfony\Component\Serializer\Encoder\JsonDecode(['json_decode_associative' => true]))]);
         return new static($httpClient, $requestFactory, $serializer, $streamFactory);
     }
 }

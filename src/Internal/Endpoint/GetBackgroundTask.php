@@ -21,15 +21,15 @@ class GetBackgroundTask extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getUri() : string
     {
-        return str_replace(array('{task_id}'), array($this->task_id), '/api/v1/background-task/{task_id}/');
+        return str_replace(['{task_id}'], [$this->task_id], '/api/v1/background-task/{task_id}/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     /**
      * {@inheritdoc}
@@ -75,6 +75,6 @@ class GetBackgroundTask extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

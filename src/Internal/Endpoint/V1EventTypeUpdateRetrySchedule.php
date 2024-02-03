@@ -23,18 +23,18 @@ class V1EventTypeUpdateRetrySchedule extends \Svix\Internal\Runtime\Client\BaseE
     }
     public function getUri() : string
     {
-        return str_replace(array('{event_type_name}'), array($this->event_type_name), '/api/v1/event-type/{event_type_name}/retry-schedule/');
+        return str_replace(['{event_type_name}'], [$this->event_type_name], '/api/v1/event-type/{event_type_name}/retry-schedule/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if ($this->body instanceof \Svix\Internal\Model\RetryScheduleInOut) {
-            return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
+            return [['Content-Type' => ['application/json']], $serializer->serialize($this->body, 'json')];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     /**
      * {@inheritdoc}
@@ -80,6 +80,6 @@ class V1EventTypeUpdateRetrySchedule extends \Svix\Internal\Runtime\Client\BaseE
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

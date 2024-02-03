@@ -15,7 +15,7 @@ class V1IntegrationRotateKey extends \Svix\Internal\Runtime\Client\BaseEndpoint 
      *     @var string $idempotency-key The request's idempotency key
      * }
      */
-    public function __construct(string $appId, string $integId, array $headerParameters = array())
+    public function __construct(string $appId, string $integId, array $headerParameters = [])
     {
         $this->app_id = $appId;
         $this->integ_id = $integId;
@@ -28,23 +28,23 @@ class V1IntegrationRotateKey extends \Svix\Internal\Runtime\Client\BaseEndpoint 
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{integ_id}'), array($this->app_id, $this->integ_id), '/api/v1/app/{app_id}/integration/{integ_id}/key/rotate/');
+        return str_replace(['{app_id}', '{integ_id}'], [$this->app_id, $this->integ_id], '/api/v1/app/{app_id}/integration/{integ_id}/key/rotate/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
-        $optionsResolver->setDefined(array('idempotency-key'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('idempotency-key', array('string'));
+        $optionsResolver->setDefined(['idempotency-key']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('idempotency-key', ['string']);
         return $optionsResolver;
     }
     /**
@@ -91,6 +91,6 @@ class V1IntegrationRotateKey extends \Svix\Internal\Runtime\Client\BaseEndpoint 
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

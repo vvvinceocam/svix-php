@@ -18,7 +18,7 @@ class V1EventTypeDelete extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     *     @var bool $expunge By default event types are archived when "deleted". Passing this to `true` deletes them entirely.
     * }
     */
-    public function __construct(string $eventTypeName, array $queryParameters = array())
+    public function __construct(string $eventTypeName, array $queryParameters = [])
     {
         $this->event_type_name = $eventTypeName;
         $this->queryParameters = $queryParameters;
@@ -30,24 +30,24 @@ class V1EventTypeDelete extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getUri() : string
     {
-        return str_replace(array('{event_type_name}'), array($this->event_type_name), '/api/v1/event-type/{event_type_name}/');
+        return str_replace(['{event_type_name}'], [$this->event_type_name], '/api/v1/event-type/{event_type_name}/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('expunge'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array('expunge' => false));
-        $optionsResolver->addAllowedTypes('expunge', array('bool'));
-        $optionsResolver->setNormalizer('expunge', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
+        $optionsResolver->setDefined(['expunge']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults(['expunge' => false]);
+        $optionsResolver->addAllowedTypes('expunge', ['bool']);
+        $optionsResolver->setNormalizer('expunge', \Closure::fromCallable([new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke']));
         return $optionsResolver;
     }
     /**
@@ -94,6 +94,6 @@ class V1EventTypeDelete extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

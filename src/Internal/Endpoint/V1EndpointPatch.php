@@ -26,18 +26,18 @@ class V1EndpointPatch extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{endpoint_id}'), array($this->app_id, $this->endpoint_id), '/api/v1/app/{app_id}/endpoint/{endpoint_id}/');
+        return str_replace(['{app_id}', '{endpoint_id}'], [$this->app_id, $this->endpoint_id], '/api/v1/app/{app_id}/endpoint/{endpoint_id}/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if ($this->body instanceof \Svix\Internal\Model\EndpointPatch) {
-            return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
+            return [['Content-Type' => ['application/json']], $serializer->serialize($this->body, 'json')];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     /**
      * {@inheritdoc}
@@ -83,6 +83,6 @@ class V1EndpointPatch extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

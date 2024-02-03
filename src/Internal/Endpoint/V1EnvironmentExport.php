@@ -11,7 +11,7 @@ class V1EnvironmentExport extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
      *     @var string $idempotency-key The request's idempotency key
      * }
      */
-    public function __construct(array $headerParameters = array())
+    public function __construct(array $headerParameters = [])
     {
         $this->headerParameters = $headerParameters;
     }
@@ -26,19 +26,19 @@ class V1EnvironmentExport extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
-        $optionsResolver->setDefined(array('idempotency-key'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('idempotency-key', array('string'));
+        $optionsResolver->setDefined(['idempotency-key']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('idempotency-key', ['string']);
         return $optionsResolver;
     }
     /**
@@ -85,6 +85,6 @@ class V1EnvironmentExport extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

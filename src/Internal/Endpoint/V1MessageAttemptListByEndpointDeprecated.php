@@ -35,7 +35,7 @@ class V1MessageAttemptListByEndpointDeprecated extends \Svix\Internal\Runtime\Cl
     *     @var array $event_types Filter response based on the event type
     * }
     */
-    public function __construct(string $appId, string $msgId, string $endpointId, array $queryParameters = array())
+    public function __construct(string $appId, string $msgId, string $endpointId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->msg_id = $msgId;
@@ -49,29 +49,29 @@ class V1MessageAttemptListByEndpointDeprecated extends \Svix\Internal\Runtime\Cl
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{msg_id}', '{endpoint_id}'), array($this->app_id, $this->msg_id, $this->endpoint_id), '/api/v1/app/{app_id}/msg/{msg_id}/endpoint/{endpoint_id}/attempt/');
+        return str_replace(['{app_id}', '{msg_id}', '{endpoint_id}'], [$this->app_id, $this->msg_id, $this->endpoint_id], '/api/v1/app/{app_id}/msg/{msg_id}/endpoint/{endpoint_id}/attempt/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator', 'channel', 'status', 'before', 'after', 'event_types'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('limit', array('int'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('channel', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('status', array('int'));
-        $optionsResolver->addAllowedTypes('before', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('after', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('event_types', array('array', 'null'));
+        $optionsResolver->setDefined(['limit', 'iterator', 'channel', 'status', 'before', 'after', 'event_types']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('limit', ['int']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('channel', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('status', ['int']);
+        $optionsResolver->addAllowedTypes('before', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('after', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('event_types', ['array', 'null']);
         return $optionsResolver;
     }
     /**
@@ -118,6 +118,6 @@ class V1MessageAttemptListByEndpointDeprecated extends \Svix\Internal\Runtime\Cl
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

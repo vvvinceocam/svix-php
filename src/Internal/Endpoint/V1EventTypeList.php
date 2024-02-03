@@ -15,7 +15,7 @@ class V1EventTypeList extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
      *     @var bool $with_content When `true` the full item (including the schema) is included in the response
      * }
      */
-    public function __construct(array $queryParameters = array())
+    public function __construct(array $queryParameters = [])
     {
         $this->queryParameters = $queryParameters;
     }
@@ -30,25 +30,25 @@ class V1EventTypeList extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator', 'order', 'include_archived', 'with_content'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array('include_archived' => false, 'with_content' => false));
-        $optionsResolver->addAllowedTypes('limit', array('int'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('order', array('string'));
-        $optionsResolver->addAllowedTypes('include_archived', array('bool'));
-        $optionsResolver->setNormalizer('include_archived', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
-        $optionsResolver->addAllowedTypes('with_content', array('bool'));
-        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
+        $optionsResolver->setDefined(['limit', 'iterator', 'order', 'include_archived', 'with_content']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults(['include_archived' => false, 'with_content' => false]);
+        $optionsResolver->addAllowedTypes('limit', ['int']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('order', ['string']);
+        $optionsResolver->addAllowedTypes('include_archived', ['bool']);
+        $optionsResolver->setNormalizer('include_archived', \Closure::fromCallable([new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke']));
+        $optionsResolver->addAllowedTypes('with_content', ['bool']);
+        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable([new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke']));
         return $optionsResolver;
     }
     /**
@@ -95,6 +95,6 @@ class V1EventTypeList extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

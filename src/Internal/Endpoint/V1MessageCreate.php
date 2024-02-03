@@ -25,7 +25,7 @@ class V1MessageCreate extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     *     @var string $idempotency-key The request's idempotency key
     * }
     */
-    public function __construct(string $appId, \Svix\Internal\Model\MessageIn $requestBody, array $queryParameters = array(), array $headerParameters = array())
+    public function __construct(string $appId, \Svix\Internal\Model\MessageIn $requestBody, array $queryParameters = [], array $headerParameters = [])
     {
         $this->app_id = $appId;
         $this->body = $requestBody;
@@ -39,36 +39,36 @@ class V1MessageCreate extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}'), array($this->app_id), '/api/v1/app/{app_id}/msg/');
+        return str_replace(['{app_id}'], [$this->app_id], '/api/v1/app/{app_id}/msg/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if ($this->body instanceof \Svix\Internal\Model\MessageIn) {
-            return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
+            return [['Content-Type' => ['application/json']], $serializer->serialize($this->body, 'json')];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('with_content'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array('with_content' => true));
-        $optionsResolver->addAllowedTypes('with_content', array('bool'));
-        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
+        $optionsResolver->setDefined(['with_content']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults(['with_content' => true]);
+        $optionsResolver->addAllowedTypes('with_content', ['bool']);
+        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable([new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke']));
         return $optionsResolver;
     }
     protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
-        $optionsResolver->setDefined(array('idempotency-key'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('idempotency-key', array('string'));
+        $optionsResolver->setDefined(['idempotency-key']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('idempotency-key', ['string']);
         return $optionsResolver;
     }
     /**
@@ -119,6 +119,6 @@ class V1MessageCreate extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

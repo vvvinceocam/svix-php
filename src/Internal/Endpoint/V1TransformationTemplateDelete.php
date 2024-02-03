@@ -21,15 +21,15 @@ class V1TransformationTemplateDelete extends \Svix\Internal\Runtime\Client\BaseE
     }
     public function getUri() : string
     {
-        return str_replace(array('{transformation_template_id}'), array($this->transformation_template_id), '/api/v1/transformation-template/{transformation_template_id}');
+        return str_replace(['{transformation_template_id}'], [$this->transformation_template_id], '/api/v1/transformation-template/{transformation_template_id}');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     /**
      * {@inheritdoc}
@@ -75,6 +75,6 @@ class V1TransformationTemplateDelete extends \Svix\Internal\Runtime\Client\BaseE
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

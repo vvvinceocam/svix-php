@@ -14,7 +14,7 @@ class V1IntegrationList extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
      *     @var string $iterator The iterator returned from a prior invocation
      * }
      */
-    public function __construct(string $appId, array $queryParameters = array())
+    public function __construct(string $appId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->queryParameters = $queryParameters;
@@ -26,24 +26,24 @@ class V1IntegrationList extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}'), array($this->app_id), '/api/v1/app/{app_id}/integration/');
+        return str_replace(['{app_id}'], [$this->app_id], '/api/v1/app/{app_id}/integration/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('limit', array('int'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
+        $optionsResolver->setDefined(['limit', 'iterator']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('limit', ['int']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
         return $optionsResolver;
     }
     /**
@@ -90,6 +90,6 @@ class V1IntegrationList extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

@@ -19,7 +19,7 @@ class V1InboundMsg extends \Svix\Internal\Runtime\Client\BaseEndpoint implements
      *     @var string $idempotency-key The request's idempotency key
      * }
      */
-    public function __construct(string $appId, string $inboundToken, string $requestBody, array $queryParameters = array(), array $headerParameters = array())
+    public function __construct(string $appId, string $inboundToken, string $requestBody, array $queryParameters = [], array $headerParameters = [])
     {
         $this->app_id = $appId;
         $this->inbound_token = $inboundToken;
@@ -34,35 +34,35 @@ class V1InboundMsg extends \Svix\Internal\Runtime\Client\BaseEndpoint implements
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{inbound_token}'), array($this->app_id, $this->inbound_token), '/api/v1/app/{app_id}/inbound/msg/{inbound_token}/');
+        return str_replace(['{app_id}', '{inbound_token}'], [$this->app_id, $this->inbound_token], '/api/v1/app/{app_id}/inbound/msg/{inbound_token}/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if (is_string($this->body)) {
-            return array(array('Content-Type' => array('text/plain; charset=utf-8')), $this->body);
+            return [['Content-Type' => ['text/plain; charset=utf-8']], $this->body];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('event_type'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('event_type', array('string', 'null'));
+        $optionsResolver->setDefined(['event_type']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('event_type', ['string', 'null']);
         return $optionsResolver;
     }
     protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
-        $optionsResolver->setDefined(array('idempotency-key'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('idempotency-key', array('string'));
+        $optionsResolver->setDefined(['idempotency-key']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('idempotency-key', ['string']);
         return $optionsResolver;
     }
     /**
@@ -109,6 +109,6 @@ class V1InboundMsg extends \Svix\Internal\Runtime\Client\BaseEndpoint implements
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

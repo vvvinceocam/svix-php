@@ -30,7 +30,7 @@ class V1MessageAttemptListAttemptedMessages extends \Svix\Internal\Runtime\Clien
     *     @var array $event_types Filter response based on the event type
     * }
     */
-    public function __construct(string $appId, string $endpointId, array $queryParameters = array())
+    public function __construct(string $appId, string $endpointId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->endpoint_id = $endpointId;
@@ -43,31 +43,31 @@ class V1MessageAttemptListAttemptedMessages extends \Svix\Internal\Runtime\Clien
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{endpoint_id}'), array($this->app_id, $this->endpoint_id), '/api/v1/app/{app_id}/endpoint/{endpoint_id}/msg/');
+        return str_replace(['{app_id}', '{endpoint_id}'], [$this->app_id, $this->endpoint_id], '/api/v1/app/{app_id}/endpoint/{endpoint_id}/msg/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator', 'channel', 'status', 'before', 'after', 'with_content', 'event_types'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array('with_content' => true));
-        $optionsResolver->addAllowedTypes('limit', array('int'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('channel', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('status', array('int'));
-        $optionsResolver->addAllowedTypes('before', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('after', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('with_content', array('bool'));
-        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
-        $optionsResolver->addAllowedTypes('event_types', array('array', 'null'));
+        $optionsResolver->setDefined(['limit', 'iterator', 'channel', 'status', 'before', 'after', 'with_content', 'event_types']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults(['with_content' => true]);
+        $optionsResolver->addAllowedTypes('limit', ['int']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('channel', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('status', ['int']);
+        $optionsResolver->addAllowedTypes('before', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('after', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('with_content', ['bool']);
+        $optionsResolver->setNormalizer('with_content', \Closure::fromCallable([new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke']));
+        $optionsResolver->addAllowedTypes('event_types', ['array', 'null']);
         return $optionsResolver;
     }
     /**
@@ -114,6 +114,6 @@ class V1MessageAttemptListAttemptedMessages extends \Svix\Internal\Runtime\Clien
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

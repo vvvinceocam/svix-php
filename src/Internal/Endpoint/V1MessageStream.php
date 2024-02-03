@@ -16,7 +16,7 @@ class V1MessageStream extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
      *     @var array $channels Filter response based on the event type
      * }
      */
-    public function __construct(string $appId, array $queryParameters = array())
+    public function __construct(string $appId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->queryParameters = $queryParameters;
@@ -28,26 +28,26 @@ class V1MessageStream extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}'), array($this->app_id), '/api/v1/app/{app_id}/events/');
+        return str_replace(['{app_id}'], [$this->app_id], '/api/v1/app/{app_id}/events/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator', 'event_types', 'channels'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('limit', array('int'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('event_types', array('array', 'null'));
-        $optionsResolver->addAllowedTypes('channels', array('array', 'null'));
+        $optionsResolver->setDefined(['limit', 'iterator', 'event_types', 'channels']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('limit', ['int']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('event_types', ['array', 'null']);
+        $optionsResolver->addAllowedTypes('channels', ['array', 'null']);
         return $optionsResolver;
     }
     /**
@@ -94,6 +94,6 @@ class V1MessageStream extends \Svix\Internal\Runtime\Client\BaseEndpoint impleme
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

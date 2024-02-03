@@ -4,18 +4,18 @@
   "license": "MIT",
   "require": {
     "php": ">=8.2",
-    "jane-php/open-api-runtime": "^v7.5.4",
-    "php-http/discovery": "^1.17",
+    "jane-php/open-api-runtime": "^v7.6.0",
+    "php-http/discovery": "^1.19",
     "psr/http-client-implementation": "*",
-    "symfony/http-client": "^6.3",
+    "symfony/http-client": "^6.4",
     "psr/http-factory-implementation": "*",
     "php-http/client-common": "^2.7"
   },
   "require-dev": {
-    "jane-php/open-api-3": "v7.5.4",
-    "friendsofphp/php-cs-fixer": "^3.36",
+    "jane-php/open-api-3": "v7.6.0",
+    "friendsofphp/php-cs-fixer": "^3.49",
     "psy/psysh": "^0.11.22",
-    "pestphp/pest": "^2.24",
+    "pestphp/pest": "^2.33",
     "nyholm/psr7": "^1.8"
   },
   "autoload": {

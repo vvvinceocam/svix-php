@@ -14,7 +14,7 @@ class V1StatsAppAttempts extends \Svix\Internal\Runtime\Client\BaseEndpoint impl
      *     @var string $endDate Filter the range to data ending by this date
      * }
      */
-    public function __construct(string $appId, array $queryParameters = array())
+    public function __construct(string $appId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->queryParameters = $queryParameters;
@@ -26,24 +26,24 @@ class V1StatsAppAttempts extends \Svix\Internal\Runtime\Client\BaseEndpoint impl
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}'), array($this->app_id), '/api/v1/stats/app/{app_id}/attempt/');
+        return str_replace(['{app_id}'], [$this->app_id], '/api/v1/stats/app/{app_id}/attempt/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('startDate', 'endDate'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('startDate', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('endDate', array('string', 'null'));
+        $optionsResolver->setDefined(['startDate', 'endDate']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('startDate', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('endDate', ['string', 'null']);
         return $optionsResolver;
     }
     /**
@@ -90,6 +90,6 @@ class V1StatsAppAttempts extends \Svix\Internal\Runtime\Client\BaseEndpoint impl
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

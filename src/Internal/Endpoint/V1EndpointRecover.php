@@ -16,7 +16,7 @@ class V1EndpointRecover extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
      *     @var string $idempotency-key The request's idempotency key
      * }
      */
-    public function __construct(string $appId, string $endpointId, \Svix\Internal\Model\RecoverIn $requestBody, array $headerParameters = array())
+    public function __construct(string $appId, string $endpointId, \Svix\Internal\Model\RecoverIn $requestBody, array $headerParameters = [])
     {
         $this->app_id = $appId;
         $this->endpoint_id = $endpointId;
@@ -30,26 +30,26 @@ class V1EndpointRecover extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{endpoint_id}'), array($this->app_id, $this->endpoint_id), '/api/v1/app/{app_id}/endpoint/{endpoint_id}/recover/');
+        return str_replace(['{app_id}', '{endpoint_id}'], [$this->app_id, $this->endpoint_id], '/api/v1/app/{app_id}/endpoint/{endpoint_id}/recover/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if ($this->body instanceof \Svix\Internal\Model\RecoverIn) {
-            return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
+            return [['Content-Type' => ['application/json']], $serializer->serialize($this->body, 'json')];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
-        $optionsResolver->setDefined(array('idempotency-key'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('idempotency-key', array('string'));
+        $optionsResolver->setDefined(['idempotency-key']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('idempotency-key', ['string']);
         return $optionsResolver;
     }
     /**
@@ -96,6 +96,6 @@ class V1EndpointRecover extends \Svix\Internal\Runtime\Client\BaseEndpoint imple
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

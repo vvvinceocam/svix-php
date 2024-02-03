@@ -15,7 +15,7 @@ class V1ApplicationCreate extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
      *     @var string $idempotency-key The request's idempotency key
      * }
      */
-    public function __construct(\Svix\Internal\Model\ApplicationIn $requestBody, array $queryParameters = array(), array $headerParameters = array())
+    public function __construct(\Svix\Internal\Model\ApplicationIn $requestBody, array $queryParameters = [], array $headerParameters = [])
     {
         $this->body = $requestBody;
         $this->queryParameters = $queryParameters;
@@ -33,31 +33,31 @@ class V1ApplicationCreate extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
         if ($this->body instanceof \Svix\Internal\Model\ApplicationIn) {
-            return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
+            return [['Content-Type' => ['application/json']], $serializer->serialize($this->body, 'json')];
         }
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('get_if_exists'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array('get_if_exists' => false));
-        $optionsResolver->addAllowedTypes('get_if_exists', array('bool'));
-        $optionsResolver->setNormalizer('get_if_exists', \Closure::fromCallable(array(new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke')));
+        $optionsResolver->setDefined(['get_if_exists']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults(['get_if_exists' => false]);
+        $optionsResolver->addAllowedTypes('get_if_exists', ['bool']);
+        $optionsResolver->setNormalizer('get_if_exists', \Closure::fromCallable([new \Svix\CustomQueryResolvers\BoolCustomQueryResolver(), '__invoke']));
         return $optionsResolver;
     }
     protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
-        $optionsResolver->setDefined(array('idempotency-key'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('idempotency-key', array('string'));
+        $optionsResolver->setDefined(['idempotency-key']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('idempotency-key', ['string']);
         return $optionsResolver;
     }
     /**
@@ -107,6 +107,6 @@ class V1ApplicationCreate extends \Svix\Internal\Runtime\Client\BaseEndpoint imp
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

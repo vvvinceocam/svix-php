@@ -17,7 +17,7 @@ class V1MessageAttemptListAttemptedDestinations extends \Svix\Internal\Runtime\C
     *     @var string $iterator The iterator returned from a prior invocation
     * }
     */
-    public function __construct(string $appId, string $msgId, array $queryParameters = array())
+    public function __construct(string $appId, string $msgId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->msg_id = $msgId;
@@ -30,24 +30,24 @@ class V1MessageAttemptListAttemptedDestinations extends \Svix\Internal\Runtime\C
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{msg_id}'), array($this->app_id, $this->msg_id), '/api/v1/app/{app_id}/msg/{msg_id}/endpoint/');
+        return str_replace(['{app_id}', '{msg_id}'], [$this->app_id, $this->msg_id], '/api/v1/app/{app_id}/msg/{msg_id}/endpoint/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('limit', 'iterator'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('limit', array('int'));
-        $optionsResolver->addAllowedTypes('iterator', array('string', 'null'));
+        $optionsResolver->setDefined(['limit', 'iterator']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('limit', ['int']);
+        $optionsResolver->addAllowedTypes('iterator', ['string', 'null']);
         return $optionsResolver;
     }
     /**
@@ -94,6 +94,6 @@ class V1MessageAttemptListAttemptedDestinations extends \Svix\Internal\Runtime\C
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }

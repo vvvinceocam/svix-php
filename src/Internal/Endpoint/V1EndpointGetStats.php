@@ -16,7 +16,7 @@ class V1EndpointGetStats extends \Svix\Internal\Runtime\Client\BaseEndpoint impl
      *     @var string $until Filter the range to data ending by this date
      * }
      */
-    public function __construct(string $appId, string $endpointId, array $queryParameters = array())
+    public function __construct(string $appId, string $endpointId, array $queryParameters = [])
     {
         $this->app_id = $appId;
         $this->endpoint_id = $endpointId;
@@ -29,24 +29,24 @@ class V1EndpointGetStats extends \Svix\Internal\Runtime\Client\BaseEndpoint impl
     }
     public function getUri() : string
     {
-        return str_replace(array('{app_id}', '{endpoint_id}'), array($this->app_id, $this->endpoint_id), '/api/v1/app/{app_id}/endpoint/{endpoint_id}/stats/');
+        return str_replace(['{app_id}', '{endpoint_id}'], [$this->app_id, $this->endpoint_id], '/api/v1/app/{app_id}/endpoint/{endpoint_id}/stats/');
     }
     public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
     {
-        return array(array(), null);
+        return [[], null];
     }
     public function getExtraHeaders() : array
     {
-        return array('Accept' => array('application/json'));
+        return ['Accept' => ['application/json']];
     }
     protected function getQueryOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getQueryOptionsResolver();
-        $optionsResolver->setDefined(array('since', 'until'));
-        $optionsResolver->setRequired(array());
-        $optionsResolver->setDefaults(array());
-        $optionsResolver->addAllowedTypes('since', array('string', 'null'));
-        $optionsResolver->addAllowedTypes('until', array('string', 'null'));
+        $optionsResolver->setDefined(['since', 'until']);
+        $optionsResolver->setRequired([]);
+        $optionsResolver->setDefaults([]);
+        $optionsResolver->addAllowedTypes('since', ['string', 'null']);
+        $optionsResolver->addAllowedTypes('until', ['string', 'null']);
         return $optionsResolver;
     }
     /**
@@ -93,6 +93,6 @@ class V1EndpointGetStats extends \Svix\Internal\Runtime\Client\BaseEndpoint impl
     }
     public function getAuthenticationScopes() : array
     {
-        return array('HTTPBearer');
+        return ['HTTPBearer'];
     }
 }
