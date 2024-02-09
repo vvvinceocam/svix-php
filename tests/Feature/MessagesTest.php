@@ -4,7 +4,10 @@ use Svix\Internal\Model\ApplicationIn;
 use Svix\Internal\Model\MessageIn;
 use Svix\Svix;
 
-$client = new Svix(getenv('SVIX_TEST_ACCESS_KEY'));
+$client = new Svix(
+    getenv('SVIX_TEST_TOKEN'),
+    new \Svix\SvixOptions(true, 'http://localhost:8071')
+);
 
 beforeEach(function () use ($client) {
     $appIn = new ApplicationIn();
@@ -24,6 +27,8 @@ test('can create then fetch back message', function () use ($client) {
     $messageSaved = $client->messages->create($this->appID, $messageIn);
 
     expect($messageSaved->getPayload()->getArrayCopy())->toEqualCanonicalizing($messageIn->getPayload());
+
+    usleep(50_000);
 
     $messageOut = $client->messages->get($this->appID, $messageSaved->getId());
 
@@ -68,6 +73,6 @@ test('can delete payload', function () use ($client) {
     $client->messages->deletePayload($this->appID, $messageSaved->getId());
 
     $messageOut = $client->messages->get($this->appID, $messageSaved->getId());
-    expect($messageOut->getPayload()['m'])->toBe('EXPUNGED');
+    expect($messageOut->getPayload()['expired'])->toBeTrue();
 });
 

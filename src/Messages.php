@@ -24,7 +24,7 @@ readonly class Messages extends EndpointsGroup
      *     before?: DateTimeInterface,
      *     after?: DateTimeInterface,
      *     with_content?: bool,
-     *     event_type?: string[],
+     *     event_types?: string[],
      * } $options
      * @return ListResponseMessageOut
      */
@@ -69,6 +69,8 @@ readonly class Messages extends EndpointsGroup
      *
      * @param string $appID The app's ID or UID
      * @param string $msgID The msg's ID or UID
+     * @param bool|null $withContent
+     *
      * @return MessageOut
      */
     public function get(string $appID, string $msgID, ?bool $withContent = null): MessageOut

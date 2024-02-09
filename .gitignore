@@ -14,6 +14,9 @@ devenv.local.nix
 # IDE config
 .idea/
 
+# Liting etc
+.php-cs-fixer.cache
+
 # Librairies
 vendor/
 

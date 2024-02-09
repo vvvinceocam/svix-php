@@ -85,9 +85,9 @@ class ListResponseMessageOut extends \ArrayObject
      *
      * @return string|null
      */
-    public function getIterator() : ?string
+    public function getIterator() : \ArrayIterator
     {
-        return $this->iterator;
+        return new \ArrayIterator($this->data);
     }
     /**
      * 
