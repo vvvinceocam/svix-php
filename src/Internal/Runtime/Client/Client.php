@@ -42,7 +42,12 @@ abstract class Client
             trigger_deprecation('jane-php/open-api-common', '7.3', 'Using %s::%s method with $fetch parameter equals to response is deprecated, use %s::%s instead.', __CLASS__, __METHOD__, __CLASS__, 'executeRawEndpoint');
             return $this->executeRawEndpoint($endpoint);
         }
-        return $endpoint->parseResponse($this->processEndpoint($endpoint), $this->serializer, $fetch);
+        $response = $this->processEndpoint($endpoint);
+        $object = $endpoint->parseResponse($response, $this->serializer, $fetch);
+        if (is_null($object)) {
+            throw new \Exception($response->getStatusCode() . ' ' . $response->getBody());
+        }
+        return $object;
     }
     public function executeRawEndpoint(Endpoint $endpoint) : ResponseInterface
     {
